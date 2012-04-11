@@ -324,7 +324,7 @@ public abstract class WindowOrientationListener {
         // The number of milliseconds for which the device posture must be stable
         // before we perform an orientation change.  If the device appears to be rotating
         // (being picked up, put down) then we keep waiting until it settles.
-        private static final int SETTLE_TIME_MIN_MS = 200;
+        private static final int SETTLE_TIME_MIN_MS = 100;
 
         // The maximum number of milliseconds to wait for the posture to settle before
         // accepting the current proposal regardless.

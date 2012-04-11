@@ -62,17 +62,17 @@
     <bool name="config_sf_slowBlur">true</bool>
 
     <!-- The duration (in milliseconds) of a short animation. -->
-    <integer name="config_shortAnimTime">200</integer>
+    <integer name="config_shortAnimTime">125</integer>
 
     <!-- The duration (in milliseconds) of a medium-length animation. -->
-    <integer name="config_mediumAnimTime">400</integer>
+    <integer name="config_mediumAnimTime">250</integer>
 
     <!-- The duration (in milliseconds) of a long animation. -->
-    <integer name="config_longAnimTime">500</integer>
+    <integer name="config_longAnimTime">350</integer>
 
     <!-- The duration (in milliseconds) of the activity open/close and fragment open/close animations. -->
-    <integer name="config_activityShortDur">150</integer>
-    <integer name="config_activityDefaultDur">220</integer>
+    <integer name="config_activityShortDur">100</integer>
+    <integer name="config_activityDefaultDur">160</integer>
 
     <!-- Duration for the dim animation behind a dialog.  This may be either
          a percentage, which is relative to the duration of the enter/open
@@ -257,7 +257,7 @@
     <bool translatable="false" name="config_wifi_background_scan_support">false</bool>
 
     <!-- Integer indicating wpa_supplicant scan interval in milliseconds -->
-    <integer translatable="false" name="config_wifi_supplicant_scan_interval">15000</integer>
+    <integer translatable="false" name="config_wifi_supplicant_scan_interval">150000</integer>
 
     <!-- Integer indicating the framework scan interval in milliseconds. This is used in the scenario
          where the chipset does not support background scanning (config_wifi_background_scan_suport
@@ -287,7 +287,7 @@
 
     <!-- If true, the screen can be rotated via the accelerometer in all 4
          rotations as the default behavior. -->
-    <bool name="config_allowAllRotations">false</bool>
+    <bool name="config_allowAllRotations">true</bool>
 
     <!-- If true, the direction rotation is applied to get to an application's requested
          orientation is reversed.  Normally, the model is that landscape is
