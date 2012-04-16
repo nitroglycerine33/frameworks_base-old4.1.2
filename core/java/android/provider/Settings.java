@@ -2134,6 +2134,12 @@ public final class Settings {
 	public static final String CUSTOM_CARRIER_LABEL = "custom_carrier_label";
 
         /**
+	* Enables long press home button, hides recent & shows search button
+	* @hide
+	*/
+	public static final String LONG_PRESS_HOME = "long_press_home";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *

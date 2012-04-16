@@ -334,6 +334,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     int mLongPressOnPowerBehavior = -1;
     boolean mScreenOnEarly = false;
     boolean mScreenOnFully = false;
+    int mScreenOffReason;
     boolean mOrientationSensorEnabled = false;
     int mCurrentAppOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
     static final int DEFAULT_ACCELEROMETER_ROTATION = 0;
@@ -439,7 +440,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     int mUpsideDownRotation = 0; // "other" portrait rotation
 
     // What we do when the user long presses on home
-    private int mLongPressOnHomeBehavior = -1;
+    private int mLongPressOnHomeBehavior = 2;
 
     // Screenshot trigger states
     // Time to volume and power must be pressed within this interval of each other.
@@ -2708,7 +2709,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     public int interceptKeyBeforeQueueing(KeyEvent event, int policyFlags, boolean isScreenOn) {
         final boolean down = event.getAction() == KeyEvent.ACTION_DOWN;
         final boolean canceled = event.isCanceled();
-        final int keyCode = event.getKeyCode();
+        int keyCode = event.getKeyCode();
 
         final boolean isInjected = (policyFlags & WindowManagerPolicy.FLAG_INJECTED) != 0;
 
