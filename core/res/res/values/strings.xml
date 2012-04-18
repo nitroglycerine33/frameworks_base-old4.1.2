@@ -3419,4 +3419,7 @@
     <!-- STK setup Call -->
     <string name="SetupCallDefault">Accept Call?</string>
 
+    <!--Application killed toast -->
+    <string name="zzapp_killed_message">Application killed</string>
+
 </resources>
