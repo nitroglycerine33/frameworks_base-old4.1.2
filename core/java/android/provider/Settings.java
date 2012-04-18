@@ -2181,6 +2181,12 @@ public final class Settings {
          */
         public static final String QUIET_HOURS_DIM = "quiet_hours_dim";
 
+	/**
+	 * Whether to wake the screen with the volume keys, the value is boolean.
+	 * @hide
+	 */
+	public static final String VOLUME_WAKE_SCREEN = "volume_wake_screen";
+
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
