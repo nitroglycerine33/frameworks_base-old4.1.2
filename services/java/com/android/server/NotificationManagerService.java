@@ -375,8 +375,8 @@ public class NotificationManagerService extends INotificationManager.Stub
         }
     };
 
-    class LEDSettingsObserver extends ContentObserver {
-        LEDSettingsObserver(Handler handler) {
+    class SettingsObserver extends ContentObserver {
+        SettingsObserver(Handler handler) {
             super(handler);
         }
 
@@ -497,8 +497,8 @@ public class NotificationManagerService extends INotificationManager.Stub
         IntentFilter sdFilter = new IntentFilter(Intent.ACTION_EXTERNAL_APPLICATIONS_UNAVAILABLE);
         mContext.registerReceiver(mIntentReceiver, sdFilter);
 
-	LEDSettingsObserver ledObserver = new LEDSettingsObserver(mHandler);
-        ledObserver.observe();
+	SettingsObserver observer = new SettingsObserver(mHandler);
+        observer.observe();
         QuietHoursSettingsObserver qhObserver = new QuietHoursSettingsObserver(mHandler);
         qhObserver.observe();
     }
@@ -1153,7 +1153,7 @@ public class NotificationManagerService extends INotificationManager.Stub
         }
 
         // Don't flash while we are in a call or screen is on
-	if (mInCall || mScreenOn || (inQuietHours() && mQuietHoursDim)) {
+	if (mLedNotification == null || mInCall || mScreenOn || (inQuietHours() && mQuietHoursDim)) {
             mNotificationLight.turnOff();
         } else {
             int ledARGB = mLedNotification.notification.ledARGB;
