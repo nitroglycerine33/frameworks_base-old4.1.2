@@ -2220,6 +2220,67 @@ public final class Settings {
          * @hide
          */
         public static final String HIDE_CLOCK = "hide_clock";
+        /*
+         * 0: Default no 1%
+         * 1: 1% Mod
+         * 2: 1% Bar
+         * 3: 1% Circle
+         * @hide
+         */
+        public static final String BATTERY_PERCENTAGES = "battery_percentages";
+        /**
+         * MIUI battery bar color
+         * @hide
+         */
+        public static final String HIDE_BATTERY = "hide_battery";
+
+        /**
+         * Show/Hide MIUI battery bar
+         * @hide
+         */
+        public static final String STATUSBAR_BATTERY_BAR = "statusbar_battery_bar";
+
+        /**
+         * MIUI battery bar color
+         * @hide
+         */
+        public static final String STATUSBAR_BATTERY_BAR_COLOR = "statusbar_battery_bar_color";
+
+        /**
+         * Standard battery text color
+         * @hide
+         */
+        public static final String BATTERY_TEXT_COLOR_STOCK = "battery_text_color_stock";
+
+        /**
+         * Allow color changing on battery text
+         * @hide
+         */
+        public static final String BATTERY_TEXT_COLOR_ALLOWED = "battery_text_color_allowed";
+
+        /**
+         * Battery charging color
+         * @hide
+         */
+        public static final String BATTERY_TEXT_COLOR_CHARGE = "battery_text_color_charge";
+
+        /**
+         * Battery color when 16% or higher
+         * @hide
+         */
+        public static final String BATTERY_TEXT_COLOR_NORMAL = "battery_text_color_normal";
+
+        /**
+         * Battery color when 15% or lower
+         * @hide
+         */
+        public static final String BATTERY_TEXT_COLOR_LOW = "battery_text_color_low";
+
+        /**
+         * Show/Hide battery text %
+         * @hide
+         */
+        public static final String BATTERY_TEXT = "battery_text";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
