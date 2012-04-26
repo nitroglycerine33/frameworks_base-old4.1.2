@@ -2128,6 +2128,13 @@ public final class Settings {
 		public static final String SHOW_SEARCH_BUTTON = "show_search_button";
 
 	/**
+	* Setting to change softkey icon color in nav bar
+	* @hide
+	*/
+
+	public static final String SOFT_KEY_COLOR = "soft_key_color";
+
+	/**
 	* Custom Carrier text.
 	* @hide
 	*/

@@ -18,6 +18,7 @@ public class HomeButton extends KeyButtonView {
 
     IStatusBarService mStatusBarService;
     private boolean mLongPress;
+    private int mSoftKeyColor;
     Handler mHandler;
 
     class SettingsObserver extends ContentObserver {
@@ -29,6 +30,7 @@ public class HomeButton extends KeyButtonView {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(
                 Settings.System.getUriFor(Settings.System.LONG_PRESS_HOME), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(Settings.System.SOFT_KEY_COLOR), false, this);
         }
 
         @Override
@@ -88,5 +90,10 @@ public class HomeButton extends KeyButtonView {
     protected void updateSettings() {
         ContentResolver resolver = mContext.getContentResolver();
         mLongPress = (Settings.System.getInt(resolver, Settings.System.LONG_PRESS_HOME, 0) == 1);
+
+        mSoftKeyColor = Settings.System.getInt(resolver, Settings.System.SOFT_KEY_COLOR, 0xFFAEAEAE);
+        setColorFilter(mSoftKeyColor);
+
+
     }
 }
