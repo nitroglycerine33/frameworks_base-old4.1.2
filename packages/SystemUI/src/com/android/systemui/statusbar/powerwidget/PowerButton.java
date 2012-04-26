@@ -54,7 +54,7 @@ public abstract class PowerButton {
     public static final String BUTTON_WIMAX = "toggleWimax";
     public static final String BUTTON_UNKNOWN = "unknown";
 
-    private static final Mode MASK_MODE = Mode.SCREEN;
+    private static final Mode MASK_MODE = Mode.MULTIPLY;
 
     // this is a list of all of our buttons and their corresponding classes
     private static final HashMap<String, Class<? extends PowerButton>> BUTTONS = new HashMap<String, Class<? extends PowerButton>>();
