@@ -2220,6 +2220,13 @@ public final class Settings {
          * @hide
          */
         public static final String HIDE_CLOCK = "hide_clock";
+
+        /**
+         * Color for the clock
+         * @hide
+         */
+        public static final String CLOCK_COLOR = "clock_color";
+
         /*
          * 0: Default no 1%
          * 1: 1% Mod
