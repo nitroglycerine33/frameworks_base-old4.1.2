@@ -85,7 +85,7 @@ public class PowerWidget extends FrameLayout {
         updateVisibility();
     }
 
-    public void setupWidget() {
+    public void destroyWidget() {
         Log.i(TAG, "Clearing any old widget stuffs");
         // remove all views from the layout
         removeAllViews();
@@ -101,7 +101,13 @@ public class PowerWidget extends FrameLayout {
 
         // clear the button instances
         PowerButton.unloadAllButtons();
-
+        
+    }
+    
+    public void setupWidget() {
+    	
+    	destroyWidget();
+    	
         Log.i(TAG, "Setting up widget");
 
         String buttons = Settings.System.getString(mContext.getContentResolver(), Settings.System.WIDGET_BUTTONS);

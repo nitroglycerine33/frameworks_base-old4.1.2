@@ -308,6 +308,7 @@ please see styles_device_defaults.xml.
 
     <style name="Widget.Button.Small">
         <item name="android:background">@android:drawable/btn_default_small</item>
+        <item name="android:textColor">@android:color/white</item>
     </style>
 
     <style name="Widget.Button.Inset">
@@ -819,7 +820,7 @@ please see styles_device_defaults.xml.
     </style>
 
     <style name="TextAppearance.Widget.Button" parent="TextAppearance.Small.Inverse">
-        <item name="android:textColor">@android:color/primary_text_light_nodisable</item>
+        <item name="android:textColor">@android:color/white</item>
     </style>
 
     <style name="TextAppearance.Widget.IconMenu.Item" parent="TextAppearance.Small">

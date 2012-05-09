@@ -2317,6 +2317,13 @@ public final class Settings {
         public static final String NOTIFICATION_LIGHT_COLOR = "notification_light_color";
 
         /**
+         * Show or Hide the SoftKeys
+         * 
+         * @hide
+         */
+        public static final String NAVBAR_TOGGLE_SHOW = "navbar_toggle_show";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *

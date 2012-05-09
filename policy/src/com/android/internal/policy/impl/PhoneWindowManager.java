@@ -503,6 +503,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     Settings.Secure.DEFAULT_INPUT_METHOD), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     "fancy_rotation_anim"), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NAVBAR_TOGGLE_SHOW), false, this);
             updateSettings();
         }
 
@@ -969,8 +971,12 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 ? com.android.internal.R.dimen.status_bar_height
                 : com.android.internal.R.dimen.system_bar_height);
 
-        mHasNavigationBar = mContext.getResources().getBoolean(
-                com.android.internal.R.bool.config_showNavigationBar);
+        //change the bool of the navbar config file to an int for toggling
+        final int mHasBar = mContext.getResources().getBoolean(
+                com.android.internal.R.bool.config_showNavigationBar) ? 1 : 0;
+
+        mHasNavigationBar = Settings.System.getInt(mContext.getContentResolver(), Settings.System.NAVBAR_TOGGLE_SHOW, mHasBar) == 1;
+
         // Allow a system property to override this. Used by the emulator.
         // See also hasNavigationBar().
         String navBarOverride = SystemProperties.get("qemu.hw.mainkeys");
@@ -1010,7 +1016,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             mVolumeWakeScreen = (Settings.System.getInt(resolver,
                     Settings.System.VOLUME_WAKE_SCREEN, 0) == 1);
 	    mVolBtnMusicControls = (Settings.System.getInt(resolver,
-		    Settings.System.VOLBTN_MUSIC_CONTROLS, 1) == 1);
+		    Settings.System.VOLBTN_MUSIC_CONTROLS, 0) == 1);
             int accelerometerDefault = Settings.System.getInt(resolver,
                     Settings.System.ACCELEROMETER_ROTATION, DEFAULT_ACCELEROMETER_ROTATION);
             
@@ -1021,6 +1027,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             mUserRotation = Settings.System.getInt(resolver,
                     Settings.System.USER_ROTATION,
                     Surface.ROTATION_0);
+            boolean changed = Settings.System.getInt(resolver, Settings.System.NAVBAR_TOGGLE_SHOW,
+                            0) == 1;
+            if (mHasNavigationBar != changed) {
+                setInitialDisplaySize(mUnrestrictedScreenWidth,mUnrestrictedScreenHeight);
+            }
 
             if (mAccelerometerDefault != accelerometerDefault) {
                 mAccelerometerDefault = accelerometerDefault;
@@ -1361,13 +1372,13 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             Context context = mContext;
             //Log.i(TAG, "addStartingWindow " + packageName + ": nonLocalizedLabel="
             //        + nonLocalizedLabel + " theme=" + Integer.toHexString(theme));
-            if (theme != context.getThemeResId() || labelRes != 0) {
-                try {
-                    context = context.createPackageContext(packageName, 0);
+            try {
+                context = context.createPackageContext(packageName, 0);
+                if (theme != context.getThemeResId()) {
                     context.setTheme(theme);
-                } catch (PackageManager.NameNotFoundException e) {
-                    // Ignore
                 }
+            } catch (PackageManager.NameNotFoundException e) {
+                // Ignore
             }
             
             Window win = PolicyManager.makeNewWindow(context);
