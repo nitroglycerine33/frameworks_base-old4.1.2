@@ -2146,6 +2146,12 @@ public final class Settings {
 	*/
 	public static final String LONG_PRESS_HOME = "long_press_home";
 
+        /**
+         * Stores values for custom lockscreen targets
+         * @hide
+         */
+        public static final String LOCKSCREEN_TARGETS = "lockscreen_targets";
+
 	/*
          * Whether to enable quiet hours.
          * @hide

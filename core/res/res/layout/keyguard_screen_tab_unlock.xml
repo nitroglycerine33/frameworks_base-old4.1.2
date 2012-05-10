@@ -91,23 +91,6 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_gravity="right"
-        android:layout_marginRight="@dimen/keyguard_lockscreen_status_line_font_right_margin">
-
-        <TextView
-            android:id="@+id/carrier"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:ellipsize="marquee"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textSize="@dimen/keyguard_lockscreen_status_line_font_size"
-            />
-
-    </LinearLayout>
-
     <TextView
         android:id="@+id/status1"
         android:layout_gravity="right"
@@ -138,7 +121,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="422dip">
+        android:layout_height="302dip">
 
         <com.android.internal.widget.multiwaveview.MultiWaveView
             android:id="@+id/unlock_widget"
@@ -160,6 +143,20 @@
             android:verticalOffset="60dip"
             android:feedbackCount="3"
             android:vibrationDuration="20"
+            />
+
+        <TextView
+            android:id="@+id/carrier"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="12dip"
+            android:gravity="center_horizontal"
+            android:singleLine="true"
+            android:ellipsize="marquee"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="@dimen/keyguard_lockscreen_status_line_font_size"
+            android:textColor="?android:attr/textColorSecondary"
             />
 
     </RelativeLayout>
