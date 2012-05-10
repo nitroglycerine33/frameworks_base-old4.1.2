@@ -298,21 +298,22 @@ please see styles_device_defaults.xml.
     </style>
 
     <style name="Widget.Button">
-        <item name="android:background">@android:drawable/btn_default</item>
+        <item name="android:background">@android:drawable/btn_default_holo_light</item>
         <item name="android:focusable">true</item>
         <item name="android:clickable">true</item>
-        <item name="android:textAppearance">?android:attr/textAppearanceSmallInverse</item>
-        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMediumInverse</item>
+        <item name="android:textColor">@android:color/primary_text_holo_light</item>
         <item name="android:gravity">center_vertical|center_horizontal</item>
+        <item name="minWidth">42.0dip</item>
+        <item name="minHeight">42.0dip</item>
     </style>
 
     <style name="Widget.Button.Small">
-        <item name="android:background">@android:drawable/btn_default_small</item>
-        <item name="android:textColor">@android:color/white</item>
+        <item name="android:background">@android:drawable/btn_default_holo_light</item>
     </style>
 
     <style name="Widget.Button.Inset">
-        <item name="android:background">@android:drawable/button_inset</item>
+        <item name="android:background">@android:drawable/btn_toggle_holo_light</item>
     </style>
 
     <style name="Widget.Button.Transparent">
@@ -345,7 +346,7 @@ please see styles_device_defaults.xml.
     </style>
 
     <style name="Widget.Button.Toggle">
-        <item name="android:background">@android:drawable/btn_toggle_bg</item>
+        <item name="android:background">@android:drawable/btn_toggle_holo_light</item>
         <item name="android:textOn">@android:string/capital_on</item>
         <item name="android:textOff">@android:string/capital_off</item>
         <item name="android:disabledAlpha">?android:attr/disabledAlpha</item>
@@ -820,7 +821,7 @@ please see styles_device_defaults.xml.
     </style>
 
     <style name="TextAppearance.Widget.Button" parent="TextAppearance.Small.Inverse">
-        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColor">@android:color/primary_text_light_nodisable</item>
     </style>
 
     <style name="TextAppearance.Widget.IconMenu.Item" parent="TextAppearance.Small">
