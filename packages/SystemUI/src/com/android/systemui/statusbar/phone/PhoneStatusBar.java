@@ -287,6 +287,7 @@ public class PhoneStatusBar extends StatusBar {
 
         //addIntruderView();
 
+
         // Lastly, call to the icon policy to install/update all the icons.
         mIconPolicy = new PhoneStatusBarPolicy(mContext);
     }
@@ -327,8 +328,6 @@ public class PhoneStatusBar extends StatusBar {
                     (NavigationBarView) View.inflate(context, R.layout.navigation_bar, null);
 
                 mNavigationBarView.setDisabledFlags(mDisabled);
-                SettingsObserver settingsObserver = new SettingsObserver(new Handler());
-                settingsObserver.observe();
             }
         } catch (RemoteException ex) {
             // no window manager? good luck with that
@@ -429,25 +428,6 @@ public class PhoneStatusBar extends StatusBar {
         return sb;
     }
 
-    protected class SettingsObserver extends ContentObserver {
-        public SettingsObserver(Handler handler) {
-            super(handler);
-        }
-
-        public void observe() {
-            ContentResolver resolver = mContext.getContentResolver();
-            resolver.registerContentObserver(Settings.System.getUriFor(Settings.System.SHOW_MENU_BUTTON), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(Settings.System.SHOW_SEARCH_BUTTON), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(Settings.System.LONG_PRESS_HOME), false, this);
-	    onChange(true);
-        }
-
-        @Override
-        public void onChange(boolean selfChange) {
-            prepareNavigationBarView();
-        }
-    }
-  
     protected WindowManager.LayoutParams getRecentsLayoutParams(LayoutParams layoutParams) {
         boolean opaque = false;
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
@@ -518,8 +498,12 @@ public class PhoneStatusBar extends StatusBar {
     private void prepareNavigationBarView() {
         mNavigationBarView.reorient();
 
-        mNavigationBarView.getRecentsButton().setOnClickListener(mRecentsClickListener);
-        mNavigationBarView.getRecentsButton().setOnTouchListener(mRecentsPanel);
+        mNavigationBarView.setListener(mRecentsClickListener,mRecentsPanel);
+        View recentView = mNavigationBarView.findViewWithTag("recent");
+        if (recentView != null) {
+            recentView.setOnClickListener(mRecentsClickListener);
+            recentView.setOnTouchListener(mRecentsPanel);
+        }
     }
 
     // For small-screen devices (read: phones) that lack hardware navigation buttons
@@ -1838,32 +1822,32 @@ public class PhoneStatusBar extends StatusBar {
     public void dump(FileDescriptor fd, PrintWriter pw, String[] args) {
         synchronized (mQueueLock) {
             pw.println("Current Status Bar state:");
-            pw.println(" mExpanded=" + mExpanded
+            pw.println("  mExpanded=" + mExpanded
                     + ", mExpandedVisible=" + mExpandedVisible);
-            pw.println(" mTicking=" + mTicking);
-            pw.println(" mTracking=" + mTracking);
-            pw.println(" mAnimating=" + mAnimating
+            pw.println("  mTicking=" + mTicking);
+            pw.println("  mTracking=" + mTracking);
+            pw.println("  mAnimating=" + mAnimating
                     + ", mAnimY=" + mAnimY + ", mAnimVel=" + mAnimVel
                     + ", mAnimAccel=" + mAnimAccel);
-            pw.println(" mCurAnimationTime=" + mCurAnimationTime
+            pw.println("  mCurAnimationTime=" + mCurAnimationTime
                     + " mAnimLastTime=" + mAnimLastTime);
-            pw.println(" mAnimatingReveal=" + mAnimatingReveal
+            pw.println("  mAnimatingReveal=" + mAnimatingReveal
                     + " mViewDelta=" + mViewDelta);
-            pw.println(" mDisplayMetrics=" + mDisplayMetrics);
-            pw.println(" mExpandedParams: " + mExpandedParams);
-            pw.println(" mExpandedView: " + viewInfo(mExpandedView));
-            pw.println(" mExpandedDialog: " + mExpandedDialog);
-            pw.println(" mTrackingParams: " + mTrackingParams);
-            pw.println(" mTrackingView: " + viewInfo(mTrackingView));
-            pw.println(" mPile: " + viewInfo(mPile));
-            pw.println(" mNoNotificationsTitle: " + viewInfo(mNoNotificationsTitle));
-            pw.println(" mCloseView: " + viewInfo(mCloseView));
-            pw.println(" mTickerView: " + viewInfo(mTickerView));
-            pw.println(" mScrollView: " + viewInfo(mScrollView)
+            pw.println("  mDisplayMetrics=" + mDisplayMetrics);
+            pw.println("  mExpandedParams: " + mExpandedParams);
+            pw.println("  mExpandedView: " + viewInfo(mExpandedView));
+            pw.println("  mExpandedDialog: " + mExpandedDialog);
+            pw.println("  mTrackingParams: " + mTrackingParams);
+            pw.println("  mTrackingView: " + viewInfo(mTrackingView));
+            pw.println("  mPile: " + viewInfo(mPile));
+            pw.println("  mNoNotificationsTitle: " + viewInfo(mNoNotificationsTitle));
+            pw.println("  mCloseView: " + viewInfo(mCloseView));
+            pw.println("  mTickerView: " + viewInfo(mTickerView));
+            pw.println("  mScrollView: " + viewInfo(mScrollView)
                     + " scroll " + mScrollView.getScrollX() + "," + mScrollView.getScrollY());
         }
 
-        pw.print(" mNavigationBarView=");
+        pw.print("  mNavigationBarView=");
         if (mNavigationBarView == null) {
             pw.println("null");
         } else {
@@ -1873,22 +1857,22 @@ public class PhoneStatusBar extends StatusBar {
         if (DUMPTRUCK) {
             synchronized (mNotificationData) {
                 int N = mNotificationData.size();
-                pw.println(" notification icons: " + N);
+                pw.println("  notification icons: " + N);
                 for (int i=0; i<N; i++) {
                     NotificationData.Entry e = mNotificationData.get(i);
-                    pw.println(" [" + i + "] key=" + e.key + " icon=" + e.icon);
+                    pw.println("    [" + i + "] key=" + e.key + " icon=" + e.icon);
                     StatusBarNotification n = e.notification;
-                    pw.println(" pkg=" + n.pkg + " id=" + n.id + " priority=" + n.priority);
-                    pw.println(" notification=" + n.notification);
-                    pw.println(" tickerText=\"" + n.notification.tickerText + "\"");
+                    pw.println("         pkg=" + n.pkg + " id=" + n.id + " priority=" + n.priority);
+                    pw.println("         notification=" + n.notification);
+                    pw.println("         tickerText=\"" + n.notification.tickerText + "\"");
                 }
             }
 
             int N = mStatusIcons.getChildCount();
-            pw.println(" system icons: " + N);
+            pw.println("  system icons: " + N);
             for (int i=0; i<N; i++) {
                 StatusBarIconView ic = (StatusBarIconView) mStatusIcons.getChildAt(i);
-                pw.println(" [" + i + "] icon=" + ic);
+                pw.println("    [" + i + "] icon=" + ic);
             }
 
             if (false) {
@@ -1961,7 +1945,7 @@ public class PhoneStatusBar extends StatusBar {
     void onBarViewDetached() {
         WindowManagerImpl.getDefault().removeView(mTrackingView);
     }
-    
+
     void onTrackingViewAttached() {
         WindowManager.LayoutParams lp;
         int pixelFormat;
@@ -1996,7 +1980,7 @@ public class PhoneStatusBar extends StatusBar {
         mExpandedDialog.getWindow().setBackgroundDrawable(null);
         mExpandedDialog.show();
     }
-    
+
     void onTrackingViewDetached() {
     }
 
@@ -2113,7 +2097,7 @@ public class PhoneStatusBar extends StatusBar {
         }
 
         if (SPEW) {
-            Slog.d(TAG, "updateExpandedViewPos after expandedPosition=" + expandedPosition
+            Slog.d(TAG, "updateExpandedViewPos after  expandedPosition=" + expandedPosition
                     + " mTrackingParams.y=" + mTrackingParams.y
                     + " mTrackingPosition=" + mTrackingPosition
                     + " mExpandedParams.y=" + mExpandedParams.y
@@ -2134,7 +2118,6 @@ public class PhoneStatusBar extends StatusBar {
         if (DEBUG) {
             Slog.d(TAG, "updateDisplaySize: " + mDisplayMetrics);
         }
-        
         if (!mRecreating)
             updateExpandedSize();
     }
@@ -2327,7 +2310,7 @@ public class PhoneStatusBar extends StatusBar {
     private void setIntruderAlertVisibility(boolean vis) {
         mIntruderAlertView.setVisibility(vis ? View.VISIBLE : View.GONE);
     }
-    
+
     private static void copyNotifications(ArrayList<Pair<IBinder, StatusBarNotification>> dest,
             NotificationData source) {
         int N = source.size();
@@ -2358,7 +2341,8 @@ public class PhoneStatusBar extends StatusBar {
         copyNotifications(notifications, mNotificationData);
         mNotificationData.clear();
 
-	if (mNavigationBarView != null) {
+        if (mNavigationBarView != null) {
+            mNavigationBarView.unregisterReceivers();
             WindowManagerImpl.getDefault().removeView(mNavigationBarView);
         }
         View newStatusBarView = makeStatusBarView();
@@ -2395,8 +2379,8 @@ public class PhoneStatusBar extends StatusBar {
     void updateResources() {
         final Context context = mContext;
         final Resources res = context.getResources();
-        
-     // detect theme change.
+
+        // detect theme change.
         CustomTheme newTheme = res.getConfiguration().customTheme;
         if (newTheme != null &&
                 (mCurrentTheme == null || !mCurrentTheme.equals(newTheme))) {

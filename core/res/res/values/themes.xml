@@ -706,9 +706,9 @@ please see themes_device_defaults.xml.
         <item name="windowBackground">@android:color/transparent</item>
         <item name="windowTitleStyle">@android:style/DialogWindowTitle</item>
         <item name="windowContentOverlay">@null</item>
-        <item name="itemTextAppearance">@android:style/TextAppearance.Large.Inverse</item>
-        <item name="textAppearanceListItem">@android:style/TextAppearance.Large.Inverse</item>
-        <item name="textAppearanceListItemSmall">@android:style/TextAppearance.Large.Inverse</item>
+        <item name="itemTextAppearance">@android:style/TextAppearance.Large</item>
+        <item name="textAppearanceListItem">@android:style/TextAppearance.Large</item>
+        <item name="textAppearanceListItemSmall">@android:style/TextAppearance.Large</item>
     </style>
     
     <!-- Default dark theme for panel windows (on API level 10 and lower).  This removes all

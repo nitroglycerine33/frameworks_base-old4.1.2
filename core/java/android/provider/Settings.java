@@ -2114,18 +2114,11 @@ public final class Settings {
         public static final String EXPANDED_FLASH_MODE = "expanded_flash_mode";
 
         /**
-
-		/**
-         * Setting to show full menu button in nav bar
+         * Navigation controls to Use
+         *
          * @hide
          */
-		public static final String SHOW_MENU_BUTTON = "show_menu_button";
-
-		/**
-		* Setting to show search button in nav bar
-		* @hide
-		*/
-		public static final String SHOW_SEARCH_BUTTON = "show_search_button";
+        public static final String NAV_BUTTONS = "nav_buttons";
 
 	/**
 	* Setting to change softkey icon color in nav bar
@@ -2139,12 +2132,6 @@ public final class Settings {
 	* @hide
 	*/
 	public static final String CUSTOM_CARRIER_LABEL = "custom_carrier_label";
-
-        /**
-	* Enables long press home button, hides recent & shows search button
-	* @hide
-	*/
-	public static final String LONG_PRESS_HOME = "long_press_home";
 
         /**
          * Stores values for custom lockscreen targets
