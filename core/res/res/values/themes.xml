@@ -702,13 +702,13 @@ please see themes_device_defaults.xml.
     <!-- Default theme for alert dialog windows (on API level 10 and lower), which is used by the
          {@link android.app.AlertDialog} class.  This is basically a dialog
          but sets the background to empty so it can do two-tone backgrounds. -->
-    <style name="Theme.Dialog.Alert">
+    <style name="Theme.Dialog.Alert" parent="@android:style/Theme.Holo.Dialog.Alert">
         <item name="windowBackground">@android:color/transparent</item>
         <item name="windowTitleStyle">@android:style/DialogWindowTitle</item>
         <item name="windowContentOverlay">@null</item>
-        <item name="itemTextAppearance">@android:style/TextAppearance.Large</item>
-        <item name="textAppearanceListItem">@android:style/TextAppearance.Large</item>
-        <item name="textAppearanceListItemSmall">@android:style/TextAppearance.Large</item>
+        <item name="itemTextAppearance">@android:style/TextAppearance.Large.Inverse</item>
+        <item name="textAppearanceListItem">@android:style/TextAppearance.Large.Inverse</item>
+        <item name="textAppearanceListItemSmall">@android:style/TextAppearance.Large.Inverse</item>
     </style>
     
     <!-- Default dark theme for panel windows (on API level 10 and lower).  This removes all
@@ -1230,7 +1230,7 @@ please see themes_device_defaults.xml.
          must ensure that any background they use with this theme is itself
          light; otherwise, it will be difficult to see the widgets.  This
          UI style also includes a full action bar by default. -->
-    <style name="Theme.Holo.Light" parent="Theme.Light">
+    <style name="Theme.Holo.Light" parent="@style/Theme.Holo">
         <item name="colorForeground">@android:color/bright_foreground_holo_light</item>
         <item name="colorForegroundInverse">@android:color/bright_foreground_inverse_holo_light</item>
         <item name="colorBackground">@android:color/background_holo_light</item>
@@ -1352,6 +1352,7 @@ please see themes_device_defaults.xml.
         <item name="android:windowSoftInputMode">stateUnspecified|adjustUnspecified</item>
         <item name="windowActionBar">true</item>
         <item name="windowActionModeOverlay">false</item>
+        <item name="windowBackground">@drawable/screen_background_selector_light</item>
 
         <!-- Dialog attributes -->
         <item name="alertDialogStyle">@android:style/AlertDialog.Holo.Light</item>

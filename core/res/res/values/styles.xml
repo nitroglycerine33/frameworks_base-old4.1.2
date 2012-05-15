@@ -354,29 +354,32 @@ please see styles_device_defaults.xml.
 
     <style name="Widget.ProgressBar">
         <item name="android:indeterminateOnly">true</item>
-        <item name="android:indeterminateDrawable">@android:drawable/progress_medium_white</item>
+        <item name="android:indeterminateDrawable">@android:drawable/progress_medium_holo</item>
         <item name="android:indeterminateBehavior">repeat</item>
         <item name="android:indeterminateDuration">3500</item>
         <item name="android:minWidth">48dip</item>
         <item name="android:maxWidth">48dip</item>
         <item name="android:minHeight">48dip</item>
         <item name="android:maxHeight">48dip</item>
+	<item name="animationResolution">33</item>
     </style>
 
     <style name="Widget.ProgressBar.Large">
-        <item name="android:indeterminateDrawable">@android:drawable/progress_large_white</item>
+        <item name="android:indeterminateDrawable">@android:drawable/progress_large_holo</item>
         <item name="android:minWidth">76dip</item>
         <item name="android:maxWidth">76dip</item>
         <item name="android:minHeight">76dip</item>
         <item name="android:maxHeight">76dip</item>
+	<item name="animationResolution">33</item>
     </style>
     
     <style name="Widget.ProgressBar.Small">
-        <item name="android:indeterminateDrawable">@android:drawable/progress_small_white</item>
+        <item name="android:indeterminateDrawable">@android:drawable/progress_small_holo</item>
         <item name="android:minWidth">16dip</item>
         <item name="android:maxWidth">16dip</item>
         <item name="android:minHeight">16dip</item>
         <item name="android:maxHeight">16dip</item>
+	<item name="animationResolution">33</item>
     </style>
 
     <style name="Widget.ProgressBar.Inverse">
@@ -397,21 +400,23 @@ please see styles_device_defaults.xml.
 
     <style name="Widget.ProgressBar.Horizontal">
         <item name="android:indeterminateOnly">false</item>
-        <item name="android:progressDrawable">@android:drawable/progress_horizontal</item>
-        <item name="android:indeterminateDrawable">@android:drawable/progress_indeterminate_horizontal</item>
-        <item name="android:minHeight">3dip</item>
-        <item name="android:maxHeight">3dip</item>
+        <item name="android:progressDrawable">@android:drawable/progress_horizontal_holo_dark</item>
+        <item name="android:indeterminateDrawable">@android:drawable/progress_indeterminate_horizontal_holo</item>
+        <item name="android:minHeight">16dip</item>
+        <item name="android:maxHeight">16dip</item>
     </style>
 
     <style name="Widget.SeekBar">
         <item name="android:indeterminateOnly">false</item>
-        <item name="android:progressDrawable">@android:drawable/progress_horizontal</item>
-        <item name="android:indeterminateDrawable">@android:drawable/progress_horizontal</item>
-        <item name="android:minHeight">3dip</item>
-        <item name="android:maxHeight">3dip</item>
-        <item name="android:thumb">@android:drawable/seek_thumb</item>
-        <item name="android:thumbOffset">8dip</item>
+        <item name="android:progressDrawable">@android:drawable/scrubber_progress_horizontal_holo_dark</item>
+        <item name="android:indeterminateDrawable">@android:drawable/scrubber_progress_horizontal_holo_dark</item>
+        <item name="android:minHeight">13dip</item>
+        <item name="android:maxHeight">13dip</item>
+        <item name="android:thumb">@android:drawable/scrubber_control_selector_holo</item>
+        <item name="android:thumbOffset">16dip</item>
         <item name="android:focusable">true</item>
+        <item name="paddingLeft">16.0dip</item>
+        <item name="paddingRight">16.0dip</item>
     </style>
 
     <style name="Widget.RatingBar">
