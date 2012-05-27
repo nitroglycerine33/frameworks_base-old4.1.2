@@ -374,11 +374,20 @@ public class NavbarEditor implements OnTouchListener {
         int visibleCount = NavbarEditor.visibleCount;
         for (int v = 0;v<totalViews;v++) {
             if (lowLights.getChildAt(v) instanceof ImageView) {
+                View blank = lowLights.getChildAt(v+1);
                 if (visibleCount <= 0) {
                     lowLights.getChildAt(v).setVisibility(View.GONE);
+                    if (blank != null) {
+                        blank.setVisibility(View.GONE);
+                    }
                 } else {
                     lowLights.getChildAt(v).setVisibility(View.VISIBLE);
                     visibleCount--;
+                    if (visibleCount > 0 && blank != null) {
+                        blank.setVisibility(View.VISIBLE);
+                    } else if (blank != null) {
+                        blank.setVisibility(View.GONE);
+                    }
                 }
             }
         }
@@ -390,7 +399,7 @@ public class NavbarEditor implements OnTouchListener {
     public static final class ButtonInfo {
         public int displayId;
         public int contentDescription;
-        public int mCode;
+        public int keyCode;
         public int portResource;
         public int landResource;
         public int sideResource;
@@ -406,7 +415,7 @@ public class NavbarEditor implements OnTouchListener {
         ButtonInfo (int rId, int cD, int mC, int pR, int lR, int sR) {
             displayId = rId;
             contentDescription = cD;
-            mCode = mC;
+            keyCode = mC;
             portResource = pR;
             landResource = lR;
             sideResource = sR;

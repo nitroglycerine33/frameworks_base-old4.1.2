@@ -67,7 +67,6 @@ import android.view.WindowManagerImpl;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RemoteViews;
 import android.widget.ScrollView;
@@ -496,14 +495,8 @@ public class PhoneStatusBar extends StatusBar {
     };
 
     private void prepareNavigationBarView() {
-        mNavigationBarView.reorient();
-
         mNavigationBarView.setListener(mRecentsClickListener,mRecentsPanel);
-        View recentView = mNavigationBarView.findViewWithTag("recent");
-        if (recentView != null) {
-            recentView.setOnClickListener(mRecentsClickListener);
-            recentView.setOnTouchListener(mRecentsPanel);
-        }
+        mNavigationBarView.reorient();
     }
 
     // For small-screen devices (read: phones) that lack hardware navigation buttons

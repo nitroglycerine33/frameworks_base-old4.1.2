@@ -20,6 +20,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.database.ContentObserver;
 import android.graphics.drawable.Drawable;
@@ -216,18 +217,19 @@ public class KeyButtonView extends ImageView {
     public void setInfo (String itemKey, boolean isVertical) {
         ButtonInfo item = NavbarEditor.buttonMap.get(itemKey);
         setTag(itemKey);
-        setContentDescription(getResources().getString(item.contentDescription));
-        mCode = item.mCode;
-        boolean isSmallButton = ArrayUtils.contains(NavbarEditor.smallButtonIds,getId());
+        final Resources res = getResources();
+        setContentDescription(res.getString(item.contentDescription));
+        mCode = item.keyCode;
+        boolean isSmallButton = ArrayUtils.contains(NavbarEditor.smallButtonIds, getId());
         Drawable keyD;
         if (isSmallButton) {
-            keyD = getResources().getDrawable(item.sideResource);
+            keyD = res.getDrawable(item.sideResource);
         } else if (!isVertical) {
-            keyD = getResources().getDrawable(item.portResource);
+            keyD = res.getDrawable(item.portResource);
         } else {
-            keyD = getResources().getDrawable(item.landResource);
+            keyD = res.getDrawable(item.landResource);
         }
-        // Reason for setImageDrawable vs setImageResource is because setImageResource calls relayout() w/o
+        //Reason for setImageDrawable vs setImageResource is because setImageResource calls relayout() w/o
         //any checks. setImageDrawable performs size checks and only calls relayout if necessary. We rely on this
         //because otherwise the setX/setY attributes which are post layout cause it to mess up the layout.
         setImageDrawable(keyD);

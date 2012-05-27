@@ -113,7 +113,7 @@ public class NavigationBarView extends LinearLayout {
     }
 
     protected void toggleRecentListener(boolean enable) {
-        View recentView = mCurrentView.findViewWithTag("recent");
+        View recentView = mCurrentView.findViewWithTag(NavbarEditor.NAVBAR_RECENT);
         if (recentView != null) {
             recentView.setOnClickListener(enable ? mRecentsClickListener : null);
             recentView.setOnTouchListener(enable ? mRecentsPanel : null);
@@ -122,7 +122,9 @@ public class NavigationBarView extends LinearLayout {
 
     private void setButtonWithTagVisibility(String string, int visibility) {
         View findView = mCurrentView.findViewWithTag(string);
-        if (findView != null) findView.setVisibility(visibility);
+        if (findView != null) {
+            findView.setVisibility(visibility);
+        }
     }
 
     public NavigationBarView(Context context, AttributeSet attrs) {
@@ -140,14 +142,10 @@ public class NavigationBarView extends LinearLayout {
         mVertical = false;
         mShowMenu = false;
         mNavBarReceiver = new NavBarReceiver();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(NAVBAR_EDIT);
-        mContext.registerReceiver(mNavBarReceiver, filter);
+        mContext.registerReceiver(mNavBarReceiver, new IntentFilter(NAVBAR_EDIT));
     }
 
     protected void unregisterReceivers() {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(NAVBAR_EDIT);
         mContext.unregisterReceiver(mNavBarReceiver);
     }
 

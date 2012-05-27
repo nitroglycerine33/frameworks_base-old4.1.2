@@ -47,6 +47,8 @@
             android:layout_width="match_parent"
             android:orientation="horizontal"
             android:gravity="center_horizontal"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
             android:layout_gravity="center_horizontal"
             android:id="@+id/lights_out"
             android:visibility="gone"
@@ -54,9 +56,13 @@
             <ImageView
                 android:layout_width="80dp"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="40dp"
-                android:src="@drawable/ic_sysbar_lights_out_dot_small"
+                android:src="@drawable/ic_sysbar_lights_out_dot_large"
                 android:scaleType="center"
+                />
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:visibility="invisible"
                 android:layout_weight="1"
                 />
             <ImageView
@@ -64,27 +70,33 @@
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_sysbar_lights_out_dot_large"
                 android:scaleType="center"
+                />
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:visibility="invisible"
                 android:layout_weight="1"
                 />
-
             <ImageView
                 android:layout_width="80dp"
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_sysbar_lights_out_dot_large"
                 android:scaleType="center"
+                />
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:visibility="invisible"
                 android:layout_weight="1"
                 />
-
             <ImageView
                 android:layout_width="80dp"
-                android:layout_marginRight="40dp"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_sysbar_lights_out_dot_small"
+                android:src="@drawable/ic_sysbar_lights_out_dot_large"
                 android:scaleType="center"
-                android:layout_weight="1"
                 />
+
         </LinearLayout>
-
         <View android:id="@+id/deadzone"
             android:layout_height="@dimen/navigation_bar_deadzone_size"
             android:layout_width="match_parent"
@@ -120,15 +132,21 @@
             android:orientation="vertical"
             android:gravity="center_vertical"
             android:layout_gravity="center_vertical"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="40dp"
             android:id="@+id/lights_out"
             android:visibility="gone"
             >
             <ImageView
                 android:layout_height="80dp"
-                android:layout_marginTop="40dp"
                 android:layout_width="match_parent"
-                android:src="@drawable/ic_sysbar_lights_out_dot_small"
+                android:src="@drawable/ic_sysbar_lights_out_dot_large"
                 android:scaleType="center"
+                />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:visibility="invisible"
                 android:layout_weight="1"
                 />
             <ImageView
@@ -136,6 +154,11 @@
                 android:layout_width="match_parent"
                 android:src="@drawable/ic_sysbar_lights_out_dot_large"
                 android:scaleType="center"
+                />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:visibility="invisible"
                 android:layout_weight="1"
                 />
             <ImageView
@@ -143,15 +166,18 @@
                 android:layout_width="match_parent"
                 android:src="@drawable/ic_sysbar_lights_out_dot_large"
                 android:scaleType="center"
+                />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:visibility="invisible"
                 android:layout_weight="1"
                 />
             <ImageView
                 android:layout_height="80dp"
-                android:layout_marginBottom="40dp"
                 android:layout_width="match_parent"
-                android:src="@drawable/ic_sysbar_lights_out_dot_small"
+                android:src="@drawable/ic_sysbar_lights_out_dot_large"
                 android:scaleType="center"
-                android:layout_weight="1"
                 />
         </LinearLayout>
 
