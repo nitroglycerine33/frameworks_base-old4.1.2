@@ -45,7 +45,10 @@ public class BatteryController extends BroadcastReceiver {
     private static final int BATTERY_STYLE_TEXT    = 1;
     private static final int BATTERY_STYLE_CIRCLE  = 2;
     private static final int BATTERY_STYLE_BAR     = 3;
-    private static final int BATTERY_STYLE_GONE    = 4;
+    private static final int BATTERY_STYLE_FATTY   = 4;
+    private static final int BATTERY_STYLE_DIGITAL = 5;
+    private static final int BATTERY_STYLE_CMOD    = 6;
+    private static final int BATTERY_STYLE_GONE    = 7;
 
     private static final int BATTERY_ICON_STYLE_NORMAL         = R.drawable.stat_sys_battery;
     private static final int BATTERY_ICON_STYLE_CHARGE         = R.drawable.stat_sys_battery_charge;
@@ -55,6 +58,12 @@ public class BatteryController extends BroadcastReceiver {
     private static final int BATTERY_ICON_STYLE_CHARGE_BAR     = R.drawable.stat_sys_battery_charge_bar;
     private static final int BATTERY_ICON_STYLE_NORMAL_CIRCLE  = R.drawable.stat_sys_battery_circle;
     private static final int BATTERY_ICON_STYLE_CHARGE_CIRCLE  = R.drawable.stat_sys_battery_charge_circle;
+    private static final int BATTERY_ICON_STYLE_NORMAL_FATTY   = R.drawable.stat_sys_battery_fatty;
+    private static final int BATTERY_ICON_STYLE_CHARGE_FATTY   = R.drawable.stat_sys_battery_charge_fatty;
+    private static final int BATTERY_ICON_STYLE_NORMAL_DIGITAL = R.drawable.stat_sys_battery_digital;
+    private static final int BATTERY_ICON_STYLE_CHARGE_DIGITAL = R.drawable.stat_sys_battery_charge_digital;
+    private static final int BATTERY_ICON_STYLE_NORMAL_CMOD    = R.drawable.stat_sys_battery_cmod;
+    private static final int BATTERY_ICON_STYLE_CHARGE_CMOD    = R.drawable.stat_sys_battery_charge_cmod;
 
     private static final int BATTERY_TEXT_STYLE_NORMAL  = R.string.status_bar_settings_battery_meter_format;
     private static final int BATTERY_TEXT_STYLE_MIN     = R.string.status_bar_settings_battery_meter_min_format;
@@ -147,6 +156,18 @@ public class BatteryController extends BroadcastReceiver {
             mIcon = (View.VISIBLE);
             mIconStyle = mBatteryPlugged ? BATTERY_ICON_STYLE_CHARGE_BAR
                     : BATTERY_ICON_STYLE_NORMAL_BAR;
+        } else if (mBatteryStyle == 4) {
+            mIcon = (View.VISIBLE);
+            mIconStyle = mBatteryPlugged ? BATTERY_ICON_STYLE_CHARGE_FATTY
+                    : BATTERY_ICON_STYLE_NORMAL_FATTY;
+        } else if (mBatteryStyle == 5) {
+            mIcon = (View.VISIBLE);
+            mIconStyle = mBatteryPlugged ? BATTERY_ICON_STYLE_CHARGE_DIGITAL
+                    : BATTERY_ICON_STYLE_NORMAL_DIGITAL;
+        } else if (mBatteryStyle == 6) {
+            mIcon = (View.VISIBLE);
+            mIconStyle = mBatteryPlugged ? BATTERY_ICON_STYLE_CHARGE_CMOD
+                    : BATTERY_ICON_STYLE_NORMAL_CMOD;
         }
 
         int N = mIconViews.size();
