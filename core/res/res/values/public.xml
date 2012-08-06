@@ -1321,6 +1321,7 @@
   <java-symbol type="layout" name="screen_title" />
   <java-symbol type="layout" name="screen_title_icons" />
   <java-symbol type="string" name="abbrev_wday_month_day_no_year" />
+  <java-symbol type="string" name="app_killed_message" />
   <java-symbol type="string" name="android_upgrading_title" />
   <java-symbol type="string" name="faceunlock_multiple_failures" />
   <java-symbol type="string" name="global_action_power_off" />
@@ -3652,6 +3653,9 @@
   <public type="style" name="Widget.Holo.Light.MediaRouteButton" id="0x010301d6" />
   <public type="style" name="Widget.DeviceDefault.MediaRouteButton" id="0x010301d7" />
   <public type="style" name="Widget.DeviceDefault.Light.MediaRouteButton" id="0x010301d8" />
+
+  <!-- Nav keys -->
+  <java-symbol type="integer" name="config_backKillTimeout" />
 
   <!-- Power menu -->
   <java-symbol type="string" name="global_action_screenshot" />
