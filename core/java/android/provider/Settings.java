@@ -2470,6 +2470,20 @@ public final class Settings {
         */
         public static final String NAVIGATION_BAR_HEIGHT_LANDSCAPE = "navigation_bar_height_landscape";
 
+	/**
+         * Lock Screen Picker!
+         * 
+         * @hide
+         */
+        public static final String LOCKSCREEN_TYPE = "lockscreen_type";
+
+        /**
+         * Hide those stupid arrows
+         * 
+         * @hide
+         */
+        public static final String LOCKSCREEN_HIDE_ARROWS = "lockscreen_hide_arrows";
+
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.

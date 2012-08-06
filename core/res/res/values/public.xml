@@ -1311,6 +1311,10 @@
   <java-symbol type="layout" name="keyguard_screen_tab_unlock_land" />
   <java-symbol type="layout" name="keyguard_screen_unlock_landscape" />
   <java-symbol type="layout" name="keyguard_screen_unlock_portrait" />
+  <java-symbol type="layout" name="keyguard_screen_rotary_unlock" />
+  <java-symbol type="layout" name="keyguard_screen_rotary_unlock_land" />
+  <java-symbol type="layout" name="keyguard_screen_slider_unlock" />
+  <java-symbol type="layout" name="keyguard_screen_slider_unlock_land" />
   <java-symbol type="layout" name="recent_apps_dialog" />
   <java-symbol type="layout" name="screen_action_bar" />
   <java-symbol type="layout" name="screen_action_bar_overlay" />
