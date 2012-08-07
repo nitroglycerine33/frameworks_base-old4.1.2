@@ -1300,6 +1300,8 @@
   <java-symbol type="integer" name="config_longPressOnHomeBehavior" />
   <java-symbol type="layout" name="global_actions_item" />
   <java-symbol type="layout" name="global_actions_silent_mode" />
+  <java-symbol type="layout" name="keyguard_screen_ring_unlock" />
+  <java-symbol type="layout" name="keyguard_screen_ring_unlock_land" />
   <java-symbol type="layout" name="keyguard_screen_glogin_unlock" />
   <java-symbol type="layout" name="keyguard_screen_password_landscape" />
   <java-symbol type="layout" name="keyguard_screen_password_portrait" />
@@ -3660,6 +3662,36 @@
 
   <!-- Nav keys -->
   <java-symbol type="integer" name="config_backKillTimeout" />
+
+  <!-- Ring lockscreen -->
+  <java-symbol type="integer" name="config_ringThresholdDIP" />
+  <java-symbol type="integer" name="config_ringBaselineBottomDIP" />
+  <java-symbol type="integer" name="config_ringCenterOffsetDIP" />
+  <java-symbol type="integer" name="config_ringSecIconSizeDIP" />
+  <java-symbol type="integer" name="config_ringSecBaselineOffsetDIP" />
+  <java-symbol type="integer" name="config_ringSecCenterOffsetDIP" />
+  <java-symbol type="drawable" name="jog_ring_ring_gray" />
+  <java-symbol type="drawable" name="jog_ring_ring_green" />
+  <java-symbol type="drawable" name="jog_ring_ring_red" />
+  <java-symbol type="drawable" name="jog_ring_ring_yellow" />
+  <java-symbol type="drawable" name="jog_ring_ring_normal" />
+  <java-symbol type="drawable" name="jog_ring_ring_pressed_gray" />
+  <java-symbol type="drawable" name="jog_ring_ring_pressed_green" />
+  <java-symbol type="drawable" name="jog_ring_ring_pressed_red" />
+  <java-symbol type="drawable" name="jog_ring_ring_pressed_yellow" />
+  <java-symbol type="drawable" name="jog_ring_secback_normal" />
+
+  <!-- Honeycomb lockscreen -->
+  <java-symbol type="layout" name="keyguard_screen_honeycomb_unlock" />
+  <java-symbol type="layout" name="keyguard_screen_honeycomb_unlock_land" />
+  <java-symbol type="drawable" name="unlock_wave" />
+  <java-symbol type="drawable" name="unlock_ring" />
+  <java-symbol type="drawable" name="unlock_halo" />
+  <java-symbol type="drawable" name="unlock_default" />
+
+  <!-- Rotary Revamped lockscreen -->
+  <java-symbol type="drawable" name="ic_jog_dial_custom" />
+  <java-symbol type="drawable" name="jog_dial_arrow_short_down_green" />
 
   <!-- Power menu -->
   <java-symbol type="string" name="global_action_screenshot" />

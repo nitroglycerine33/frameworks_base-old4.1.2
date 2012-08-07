@@ -2485,6 +2485,42 @@ public final class Settings {
         public static final String LOCKSCREEN_HIDE_ARROWS = "lockscreen_hide_arrows";
 
         /**
+         * Unlock rotary by dragging down
+         * 
+         * @hide
+         */
+        public static final String LOCKSCREEN_ROTARY_UNLOCK_DOWN = "lockscreen_rotary_unlock_down";
+
+        /**
+         * Ring Apps to launch with ring style and custom app toggle enabled
+         * @hide
+         */
+        public static final String[] LOCKSCREEN_CUSTOM_RING_APP_ACTIVITIES = new String[] {
+            "lockscreen_custom_app_activity_1",
+            "lockscreen_custom_app_activity_2",
+            "lockscreen_custom_app_activity_3",
+            "lockscreen_custom_app_activity_4"
+        };
+
+      /**
+         * Lockscreen toggle to allow 4 icons 0:false/1:true
+         * @hide
+         */
+        public static final String LOCKSCREEN_EXTRA_ICONS = "lockscreen_extra_icons";
+
+        /**
+         * Lockscreen custom app one
+         * @hide
+         */
+        public static final String LOCKSCREEN_CUSTOM_ONE = "lockscreen_custom_one";
+
+        /**
+         * Lockscreen custom app two
+         * @hide
+         */
+        public static final String LOCKSCREEN_CUSTOM_TWO = "lockscreen_custom_two";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *

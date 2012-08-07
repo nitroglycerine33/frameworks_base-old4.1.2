@@ -3612,4 +3612,10 @@
 
     <!-- "Done" button for MediaRouter chooser dialog when grouping routes. [CHAR LIMIT=NONE] -->
     <string name="media_route_chooser_grouping_done">Done</string>
+
+    <!-- string for Phone tab on 4tab -->
+    <string name="zzlockscreen_phone_label">Phone</string>
+    <!-- string for custom app tab on 4tab -->
+    <string name="zzlockscreen_custom_label">Eclipse</string>
+
 </resources>
