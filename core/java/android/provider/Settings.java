@@ -2520,6 +2520,11 @@ public final class Settings {
          */
         public static final String LOCKSCREEN_CUSTOM_TWO = "lockscreen_custom_two";
 
+	/**
+	* @hide
+	*/
+	public static final String LOCKSCREEN_TARGETS = "lockscreen_targets";
+
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
