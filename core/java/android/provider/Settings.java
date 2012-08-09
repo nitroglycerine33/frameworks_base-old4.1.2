@@ -2525,7 +2525,7 @@ public final class Settings {
 	*/
 	public static final String LOCKSCREEN_TARGETS = "lockscreen_targets";
 
- /**
+ 	/**
          * Whether to enable quiet hours.
          * @hide
          */
