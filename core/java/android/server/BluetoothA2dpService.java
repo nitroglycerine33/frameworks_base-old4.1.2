@@ -43,6 +43,8 @@ import android.os.PowerManager.WakeLock;
 import android.provider.Settings;
 import android.util.Log;
 
+import com.android.internal.R;
+
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;

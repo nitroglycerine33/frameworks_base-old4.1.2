@@ -363,7 +363,7 @@ DBusHandlerResult a2dp_event_filter(DBusMessage *msg, JNIEnv *env) {
         env->CallVoidMethod(nat->me, method_onGetPlayStatusRequest);
         result = DBUS_HANDLER_RESULT_HANDLED;
         return result;
-    } else {
+    }else {
         ALOGV("... ignored");
     }
     if (env->ExceptionCheck()) {

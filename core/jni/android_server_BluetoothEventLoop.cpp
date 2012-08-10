@@ -287,7 +287,6 @@ static jboolean setUpEventLoop(native_data_t *nat) {
             LOG_AND_FREE_DBUS_ERROR(&err);
             return JNI_FALSE;
         }
-
         dbus_bus_add_match(nat->conn,
                 "type='signal',interface='"BLUEZ_DBUS_BASE_IFC".Control'",
                 &err);
