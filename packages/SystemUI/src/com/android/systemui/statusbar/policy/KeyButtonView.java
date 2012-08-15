@@ -66,6 +66,9 @@ public class KeyButtonView extends ImageView {
     RectF mRect = new RectF(0f,0f,0f,0f);
     AnimatorSet mPressedAnim;
 
+    int durationSpeedOn = 500;
+    int durationSpeedOff = 50;
+
     Runnable mCheckLongPress = new Runnable() {
         public void run() {
         	if (isPressed()) {
@@ -243,14 +246,14 @@ public class KeyButtonView extends ImageView {
                         ObjectAnimator.ofFloat(this, "glowAlpha", 1f),
                         ObjectAnimator.ofFloat(this, "glowScale", GLOW_MAX_SCALE_FACTOR)
                     );
-                    as.setDuration(25);
+                    as.setDuration(durationSpeedOff);
                 } else {
                     as.playTogether(
                         ObjectAnimator.ofFloat(this, "glowAlpha", 0f),
                         ObjectAnimator.ofFloat(this, "glowScale", 1f),
                         ObjectAnimator.ofFloat(this, "drawingAlpha", BUTTON_QUIESCENT_ALPHA)
                     );
-                    as.setDuration(250);
+                    as.setDuration(durationSpeedOn);
                 }
                 as.start();
             }
@@ -344,9 +347,9 @@ public class KeyButtonView extends ImageView {
         void observe() {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(
-                    Settings.System.getUriFor(Settings.System.NAVIGATION_BAR_BUTTON_ALPHA), false,
-                    this);
-			resolver.registerContentObserver(Settings.System.getUriFor(Settings.System.NAVIGATION_BAR_TINT), false, this);		
+                    Settings.System.getUriFor(Settings.System.NAVIGATION_BAR_BUTTON_ALPHA), false, this);
+			resolver.registerContentObserver(Settings.System.getUriFor(Settings.System.NAVIGATION_BAR_TINT), false, this);
+			resolver.registerContentObserver(Settings.System.getUriFor(Settings.System.NAVIGATION_BAR_GLOW_DURATION[1]), false, this);	
             updateSettings();
         }
 
@@ -358,6 +361,11 @@ public class KeyButtonView extends ImageView {
 
     protected void updateSettings() {
         ContentResolver resolver = mContext.getContentResolver();
+
+	durationSpeedOff = Settings.System.getInt(resolver,
+	Settings.System.NAVIGATION_BAR_GLOW_DURATION[0], 10);
+ 	durationSpeedOn = Settings.System.getInt(resolver,
+ 	Settings.System.NAVIGATION_BAR_GLOW_DURATION[1], 100);
 
         BUTTON_QUIESCENT_ALPHA = Settings.System.getFloat(resolver, Settings.System.NAVIGATION_BAR_BUTTON_ALPHA, 0.7f);
 	    mNavigationBarTint = Settings.System.getInt(resolver, Settings.System.NAVIGATION_BAR_TINT, 0xFFFFFFFF);
