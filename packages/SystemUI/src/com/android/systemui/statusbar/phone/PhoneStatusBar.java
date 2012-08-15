@@ -105,6 +105,7 @@ import com.android.systemui.statusbar.policy.NetworkController;
 import com.android.systemui.statusbar.policy.NotificationRowLayout;
 
 import java.io.FileDescriptor;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
@@ -462,7 +463,7 @@ public class PhoneStatusBar extends BaseStatusBar {
         try {
             boolean showNav = mWindowManager.hasNavigationBar();
             if (DEBUG) Slog.v(TAG, "hasNavigationBar=" + showNav);
-            if (showNav && !mRecreating) {
+            if (showNav) {
                 mNavigationBarView =
                     (NavigationBarView) View.inflate(context, R.layout.navigation_bar, null);
 
@@ -481,11 +482,6 @@ public class PhoneStatusBar extends BaseStatusBar {
         mIcons = (LinearLayout)mStatusBarView.findViewById(R.id.icons);
         mCenterClockLayout = (LinearLayout) mStatusBarView.findViewById(R.id.center_clock_layout);
         mTickerView = mStatusBarView.findViewById(R.id.ticker);
-
-        /* Destroy the old widget before recreating the expanded dialog
-           to make sure there are no context issues */
-        if (mRecreating)
-            mPowerWidget.destroyWidget();
 
         mPile = (NotificationRowLayout)mStatusBarWindow.findViewById(R.id.latestItems);
         mPile.setLayoutTransitionsEnabled(false);
@@ -646,9 +642,9 @@ public class PhoneStatusBar extends BaseStatusBar {
         // a bit jarring
         mRecentsPanel.setMinSwipeAlpha(0.03f);
         if (mNavigationBarView != null) {
-            if (mNavigationBarView.getRecentsButton() != null) {
-                mNavigationBarView.getRecentsButton().setOnTouchListener(mRecentsPanel);
-            }
+        	if (mNavigationBarView.getRecentsButton() !=null) {
+            mNavigationBarView.getRecentsButton().setOnTouchListener(mRecentsPanel);
+        	}
         }
     }
 
@@ -732,13 +728,13 @@ public class PhoneStatusBar extends BaseStatusBar {
 
     private void prepareNavigationBarView() {
         mNavigationBarView.reorient();
-
-        if (mNavigationBarView.getRecentsButton() != null) {
-            mNavigationBarView.getRecentsButton().setOnClickListener(mRecentsClickListener);
-            mNavigationBarView.getRecentsButton().setOnTouchListener(mRecentsPanel);
+        
+        if (mNavigationBarView.getRecentsButton() != null){ 
+        	mNavigationBarView.getRecentsButton().setOnClickListener(mRecentsClickListener);
+        	mNavigationBarView.getRecentsButton().setOnTouchListener(mRecentsPanel);
         }
         if (mNavigationBarView.getHomeButton() != null) {
-            mNavigationBarView.getHomeButton().setOnTouchListener(mHomeSearchActionListener);
+        		mNavigationBarView.getHomeButton().setOnTouchListener(mHomeSearchActionListener);
         }
         updateSearchPanel();
     }
@@ -2091,39 +2087,6 @@ public class PhoneStatusBar extends BaseStatusBar {
                 + ") " + v.getWidth() + "x" + v.getHeight() + "]";
     }
 
-    public void dump(FileDescriptor fd, PrintWriter pw, String[] args) {
-        synchronized (mQueueLock) {
-            pw.println("Current Status Bar state:");
-            pw.println("  mExpanded=" + mExpanded
-                    + ", mExpandedVisible=" + mExpandedVisible
-                    + ", mTrackingPosition=" + mTrackingPosition);
-            pw.println("  mTicking=" + mTicking);
-            pw.println("  mTracking=" + mTracking);
-            pw.println("  mNotificationPanel=" + 
-                    ((mNotificationPanel == null) 
-                            ? "null" 
-                            : (mNotificationPanel + " params=" + mNotificationPanel.getLayoutParams().debug(""))));
-            pw.println("  mAnimating=" + mAnimating
-                    + ", mAnimY=" + mAnimY + ", mAnimVel=" + mAnimVel
-                    + ", mAnimAccel=" + mAnimAccel);
-            pw.println("  mAnimLastTimeNanos=" + mAnimLastTimeNanos);
-            pw.println("  mAnimatingReveal=" + mAnimatingReveal
-                    + " mViewDelta=" + mViewDelta);
-            pw.println("  mDisplayMetrics=" + mDisplayMetrics);
-            pw.println("  mPile: " + viewInfo(mPile));
-            pw.println("  mCloseView: " + viewInfo(mCloseView));
-            pw.println("  mTickerView: " + viewInfo(mTickerView));
-            pw.println("  mScrollView: " + viewInfo(mScrollView)
-                    + " scroll " + mScrollView.getScrollX() + "," + mScrollView.getScrollY());
-        }
-
-        pw.print("  mNavigationBarView=");
-        if (mNavigationBarView == null) {
-            pw.println("null");
-        }
-
-    }
-
     @Override
     public void createAndAddWindows() {
         addStatusBarWindow();
@@ -2420,60 +2383,6 @@ public class PhoneStatusBar extends BaseStatusBar {
         }
     }
 
-    private static void copyNotifications(ArrayList<Pair<IBinder, StatusBarNotification>> dest,
-            NotificationData source) {
-        int N = source.size();
-        for (int i = 0; i < N; i++) {
-            NotificationData.Entry entry = source.get(i);
-            dest.add(Pair.create(entry.key, entry.notification));
-        }
-    }
-
-    private void recreateStatusBar() {
-        mRecreating = true;
-        mStatusBarContainer.removeAllViews();
-
-        // extract icons from the soon-to-be recreated viewgroup.
-        int nIcons = mStatusIcons.getChildCount();
-        ArrayList<StatusBarIcon> icons = new ArrayList<StatusBarIcon>(nIcons);
-        ArrayList<String> iconSlots = new ArrayList<String>(nIcons);
-        for (int i = 0; i < nIcons; i++) {
-            StatusBarIconView iconView = (StatusBarIconView)mStatusIcons.getChildAt(i);
-            icons.add(iconView.getStatusBarIcon());
-            iconSlots.add(iconView.getStatusBarSlot());
-        }
-
-        // extract notifications.
-        int nNotifs = mNotificationData.size();
-        ArrayList<Pair<IBinder, StatusBarNotification>> notifications =
-                new ArrayList<Pair<IBinder, StatusBarNotification>>(nNotifs);
-        copyNotifications(notifications, mNotificationData);
-        mNotificationData.clear();
-
-        makeStatusBarView();
-        repositionNavigationBar();
-
-        // recreate StatusBarIconViews.
-        for (int i = 0; i < nIcons; i++) {
-            StatusBarIcon icon = icons.get(i);
-            String slot = iconSlots.get(i);
-            addIcon(slot, i, i, icon);
-        }
-
-        // recreate notifications.
-        for (int i = 0; i < nNotifs; i++) {
-            Pair<IBinder, StatusBarNotification> notifData = notifications.get(i);
-            addNotificationViews(notifData.first, notifData.second);
-        }
-
-        setAreThereNotifications();
-
-        mStatusBarContainer.addView(mStatusBarWindow);
-
-        updateExpandedViewPos(EXPANDED_LEAVE_ALONE);
-        mRecreating = false;
-    }
-
     /**
      * Reload some of our resources when the configuration changes.
      *
@@ -2490,7 +2399,11 @@ public class PhoneStatusBar extends BaseStatusBar {
         if (newTheme != null &&
                 (mCurrentTheme == null || !mCurrentTheme.equals(newTheme))) {
             mCurrentTheme = (CustomTheme)newTheme.clone();
-            recreateStatusBar();
+            try {
+                Runtime.getRuntime().exec("pkill -TERM -f com.android.systemui");
+            } catch (IOException e) {
+                // we're screwed here fellas
+            }
         } else {
 
             if (mClearButton instanceof TextView) {
