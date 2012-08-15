@@ -2087,6 +2087,39 @@ public class PhoneStatusBar extends BaseStatusBar {
                 + ") " + v.getWidth() + "x" + v.getHeight() + "]";
     }
 
+    public void dump(FileDescriptor fd, PrintWriter pw, String[] args) {
+        synchronized (mQueueLock) {
+            pw.println("Current Status Bar state:");
+            pw.println("  mExpanded=" + mExpanded
+                    + ", mExpandedVisible=" + mExpandedVisible
+                    + ", mTrackingPosition=" + mTrackingPosition);
+            pw.println("  mTicking=" + mTicking);
+            pw.println("  mTracking=" + mTracking);
+            pw.println("  mNotificationPanel=" + 
+                    ((mNotificationPanel == null) 
+                            ? "null" 
+                            : (mNotificationPanel + " params=" + mNotificationPanel.getLayoutParams().debug(""))));
+            pw.println("  mAnimating=" + mAnimating
+                    + ", mAnimY=" + mAnimY + ", mAnimVel=" + mAnimVel
+                    + ", mAnimAccel=" + mAnimAccel);
+            pw.println("  mAnimLastTimeNanos=" + mAnimLastTimeNanos);
+            pw.println("  mAnimatingReveal=" + mAnimatingReveal
+                    + " mViewDelta=" + mViewDelta);
+            pw.println("  mDisplayMetrics=" + mDisplayMetrics);
+            pw.println("  mPile: " + viewInfo(mPile));
+            pw.println("  mCloseView: " + viewInfo(mCloseView));
+            pw.println("  mTickerView: " + viewInfo(mTickerView));
+            pw.println("  mScrollView: " + viewInfo(mScrollView)
+                    + " scroll " + mScrollView.getScrollX() + "," + mScrollView.getScrollY());
+        }
+
+        pw.print("  mNavigationBarView=");
+        if (mNavigationBarView == null) {
+            pw.println("null");
+        }
+
+    }
+
     @Override
     public void createAndAddWindows() {
         addStatusBarWindow();
