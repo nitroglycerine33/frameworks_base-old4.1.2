@@ -33,6 +33,7 @@
     <uses-permission android:name="android.permission.UPDATE_DEVICE_STATS" />
     <uses-permission android:name="android.permission.MASTER_CLEAR" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <!-- ActivityManager -->
     <uses-permission android:name="android.permission.GET_TASKS" />
@@ -120,6 +121,11 @@
                 android:theme="@*android:style/Theme.Dialog.Alert"
                 android:excludeFromRecents="true">
         </activity>
+
+	<!-- Flashlight Toggle Activity -->
+	<activity
+ 	    android:name="com.android.systemui.statusbar.powerwidget.Torch">
+ 	</activity>
 
         <!-- started from UsbDeviceSettingsManager -->
         <activity android:name=".usb.UsbConfirmActivity"
