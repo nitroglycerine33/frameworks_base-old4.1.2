@@ -2470,6 +2470,15 @@ public final class Settings {
         */
         public static final String NAVIGATION_BAR_HEIGHT_LANDSCAPE = "navigation_bar_height_landscape";
 
+        /**
+         * Whether the UI is initiated in tablet UI (false = phone UI)
+         * @hide
+         *  0 = Phone UI
+         *  1 = Tablet UI
+         *  2 = Phablet UI
+         */
+        public static final String TABLET_UI = "tablet_ui";
+
 	/**
          * Lock Screen Picker!
          * 
