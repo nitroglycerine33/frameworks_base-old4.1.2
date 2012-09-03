@@ -3722,6 +3722,10 @@
   <java-symbol type="string" name="second" />
   <java-symbol type="string" name="seconds" />
 
+<!-- QuickMessage, for editbox background overrides -->
+  <public type="drawable" name="edit_text_holo_light" />
+  <public type="drawable" name="edit_text_holo_dark" />
+
 <!-- ===============================================================
      AVRCP 1.3 Meta Data Resources
      =============================================================== -->
