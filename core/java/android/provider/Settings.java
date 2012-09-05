@@ -2602,6 +2602,12 @@ public final class Settings {
          */
         public static final String VOLUME_LINK_NOTIFICATION = "volume_link_notification";
 
+       /**
+         * Text for the Carrier Label. An empty string will bring the default text back.
+         * @hide
+         */
+        public static final String CUSTOM_CARRIER_LABEL = "custom_carrier_label";
+
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
