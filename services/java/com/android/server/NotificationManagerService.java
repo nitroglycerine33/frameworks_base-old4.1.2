@@ -586,6 +586,12 @@ public class NotificationManagerService extends INotificationManager.Stub
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NOTIFICATION_LIGHT_PULSE), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NOTIFICATION_LIGHT_OFF), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NOTIFICATION_LIGHT_ON), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NOTIFICATION_LIGHT_COLOR), false, this);
             update();
         }
 
@@ -601,6 +607,22 @@ public class NotificationManagerService extends INotificationManager.Stub
                 mNotificationPulseEnabled = pulseEnabled;
                 updateNotificationPulse();
             }
+            Resources resources = mContext.getResources();
+            mDefaultNotificationColor = Settings.System
+                    .getInt(mContext.getContentResolver(),
+                            Settings.System.NOTIFICATION_LIGHT_COLOR,
+                            resources.getColor(
+                                    com.android.internal.R.color.config_defaultNotificationColor));
+            mDefaultNotificationLedOff = Settings.System
+                    .getInt(mContext.getContentResolver(),
+                            Settings.System.NOTIFICATION_LIGHT_OFF,
+                            resources
+                                    .getInteger(com.android.internal.R.integer.config_defaultNotificationLedOff));
+            mDefaultNotificationLedOn = Settings.System
+                    .getInt(mContext.getContentResolver(),
+                            Settings.System.NOTIFICATION_LIGHT_ON,
+                            resources
+                                    .getInteger(com.android.internal.R.integer.config_defaultNotificationLedOn));
         }
     }
 
