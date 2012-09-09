@@ -109,7 +109,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingTop="6dip" >
+        android:paddingTop="4dip" >
 
         <ImageView
             android:id="@+id/weather_image"
@@ -202,7 +202,7 @@
 
     </RelativeLayout>
 
-    <!-- CyanogenMod Calendar Panel -->
+   <!-- CyanogenMod Calendar Panel -->
     <LinearLayout
         android:id="@+id/calendar_panel"
         android:layout_width="match_parent"
