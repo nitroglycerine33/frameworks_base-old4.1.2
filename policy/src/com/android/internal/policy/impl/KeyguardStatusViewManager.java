@@ -34,6 +34,7 @@ import libcore.util.MutableInt;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Resources;
+import android.content.res.Configuration;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -44,8 +45,12 @@ import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.text.format.DateUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.view.ViewGroup.MarginLayoutParams;
+import android.provider.Settings;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -103,6 +108,7 @@ class KeyguardStatusViewManager implements OnClickListener {
     private TextView mStatus1View;
     private TextView mOwnerInfoView;
     private TextView mAlarmStatusView;
+    private LinearLayout mDateLineView;
     private TransportControlView mTransportView;
     private RelativeLayout mWeatherPanel, mWeatherTempsPanel;
     private TextView mWeatherCity, mWeatherCondition, mWeatherLowHigh, mWeatherTemp, mWeatherUpdateTime;
@@ -216,6 +222,7 @@ class KeyguardStatusViewManager implements OnClickListener {
         mStatus1View = (TextView) findViewById(R.id.status1);
         mAlarmStatusView = (TextView) findViewById(R.id.alarm_status);
         mOwnerInfoView = (TextView) findViewById(R.id.propertyOf);
+        mDateLineView = (LinearLayout) findViewById(R.id.date_line);
         mTransportView = (TransportControlView) findViewById(R.id.transport);
         mEmergencyCallButton = (Button) findViewById(R.id.emergencyCallButton);
         mEmergencyCallButtonEnabledInScreen = emergencyButtonEnabledInScreen;
@@ -268,6 +275,9 @@ class KeyguardStatusViewManager implements OnClickListener {
         updateOwnerInfo();
         refreshWeather();
         refreshCalendar();
+        if (mDigitalClock != null) {
+            updateClockAlign();
+        }
 
         // Required to get Marquee to work.
         final View scrollableViews[] = { mCarrierView, mDateView, mStatus1View, mOwnerInfoView,
@@ -667,6 +677,7 @@ class KeyguardStatusViewManager implements OnClickListener {
         // First update the clock, if present.
         if (mDigitalClock != null) {
             mDigitalClock.updateTime();
+            updateClockAlign();
         }
         refreshWeather();
 
@@ -725,6 +736,53 @@ class KeyguardStatusViewManager implements OnClickListener {
             mOwnerInfoView.setText(mOwnerInfoText);
             mOwnerInfoView.setVisibility(TextUtils.isEmpty(mOwnerInfoText) ? View.GONE:View.VISIBLE);
         }
+    }
+
+    private void updateClockAlign() {
+        // No alignment on landscape.
+        if (getContext().getResources().getConfiguration().orientation ==
+                Configuration.ORIENTATION_LANDSCAPE) {
+            return;
+        }
+
+        final int clockAlign = Settings.System.getInt(getContext().getContentResolver(),
+                Settings.System.LOCKSCREEN_CLOCK_ALIGN, 2);
+        final int margin = (int) Math.round(getContext().getResources().getDimension(
+                R.dimen.keyguard_lockscreen_status_line_font_right_margin));
+
+        int leftMargin = 0, rightMargin = 0;
+        int gravity = Gravity.RIGHT;
+
+        switch (clockAlign) {
+        case 0:
+            gravity = Gravity.LEFT;
+            leftMargin = margin;
+            break;
+        case 1:
+            gravity = Gravity.CENTER;
+            break;
+        case 2:
+            rightMargin = margin;
+            break;
+        }
+
+        mDigitalClock.setGravity(gravity);
+        mDateLineView.setGravity(gravity);
+        mStatus1View.setGravity(gravity);
+
+        setSpecificMargins(mDigitalClock, leftMargin, -1, rightMargin, -1);
+        setSpecificMargins(mDateLineView, leftMargin, -1, rightMargin, -1);
+        setSpecificMargins(mStatus1View, leftMargin, -1, rightMargin, -1);
+    }
+
+    private void setSpecificMargins(View view, int left, int top, int right,
+            int bottom) {
+        MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
+        if (left != -1) params.leftMargin = left;
+        if (top != -1) params.topMargin = top;
+        if (right != -1) params.rightMargin = right;
+        if (bottom != -1) params.bottomMargin = bottom;
+        view.setLayoutParams(params);
     }
 
     private void updateStatus1() {

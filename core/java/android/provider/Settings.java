@@ -2718,6 +2718,11 @@ public final class Settings {
          */
         public static final String LOCKSCREEN_CALENDAR_REMINDERS_ONLY = "lockscreen_calendar_reminders_only";
 
+        /**
+         * Where to align the clock on the lockscreen
+         * @hide
+         */
+        public static final String LOCKSCREEN_CLOCK_ALIGN = "lockscreen_clock_align";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
