@@ -2634,6 +2634,12 @@ public final class Settings {
          */
         public static final String NOTIFICATION_LIGHT_COLOR = "notification_light_color";
 
+        /**
+         * Always show the battery status on the lockscreen
+         * @hide
+         */
+        public static final String LOCKSCREEN_ALWAYS_SHOW_BATTERY = "lockscreen_always_show_battery";
+
        /**
          * Show the weather on the lock screen
          * @hide

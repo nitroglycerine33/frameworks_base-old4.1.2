@@ -87,6 +87,7 @@ class KeyguardStatusViewManager implements OnClickListener {
     public static final int LOCK_ICON = 0; // R.drawable.ic_lock_idle_lock;
     public static final int ALARM_ICON = R.drawable.ic_lock_idle_alarm;
     public static final int CHARGING_ICON = 0; //R.drawable.ic_lock_idle_charging;
+    public static final int DISCHARGING_ICON = 0; // no icon used in ics+ currently
     public static final int BATTERY_LOW_ICON = 0; //R.drawable.ic_lock_idle_low_battery;
     private static final long INSTRUCTION_RESET_DELAY = 2000; // time until instruction text resets
 
@@ -127,6 +128,9 @@ class KeyguardStatusViewManager implements OnClickListener {
 
     // last known battery level
     private int mBatteryLevel = 100;
+
+    // always show battery status?
+    private boolean mAlwaysShowBattery = false;
 
     // last known SIM state
     protected State mSimState;
@@ -697,6 +701,7 @@ class KeyguardStatusViewManager implements OnClickListener {
         mShowingBatteryInfo = mUpdateMonitor.shouldShowBatteryInfo();
         mPluggedIn = mUpdateMonitor.isDevicePluggedIn();
         mBatteryLevel = mUpdateMonitor.getBatteryLevel();
+        mAlwaysShowBattery = KeyguardUpdateMonitor.shouldAlwaysShowBatteryInfo(getContext());
         updateStatusLines(true);
     }
 
@@ -739,16 +744,21 @@ class KeyguardStatusViewManager implements OnClickListener {
     }
 
     private void updateClockAlign() {
+        final Configuration config = getContext().getResources().getConfiguration();
         // No alignment on landscape.
-        if (getContext().getResources().getConfiguration().orientation ==
-                Configuration.ORIENTATION_LANDSCAPE) {
+        if (config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             return;
         }
 
         final int clockAlign = Settings.System.getInt(getContext().getContentResolver(),
                 Settings.System.LOCKSCREEN_CLOCK_ALIGN, 2);
-        final int margin = (int) Math.round(getContext().getResources().getDimension(
+        int margin = (int) Math.round(getContext().getResources().getDimension(
                 R.dimen.keyguard_lockscreen_status_line_font_right_margin));
+
+        // Adjust for each layout
+        if (config.screenWidthDp >= 600) { // sw600dp
+            margin = 0;
+        }
 
         int leftMargin = 0, rightMargin = 0;
         int gravity = Gravity.RIGHT;
@@ -767,12 +777,16 @@ class KeyguardStatusViewManager implements OnClickListener {
         }
 
         mDigitalClock.setGravity(gravity);
-        mDateLineView.setGravity(gravity);
-        mStatus1View.setGravity(gravity);
-
         setSpecificMargins(mDigitalClock, leftMargin, -1, rightMargin, -1);
-        setSpecificMargins(mDateLineView, leftMargin, -1, rightMargin, -1);
-        setSpecificMargins(mStatus1View, leftMargin, -1, rightMargin, -1);
+
+        if (mDateLineView != null) {
+            mDateLineView.setGravity(gravity);
+            setSpecificMargins(mDateLineView, leftMargin, -1, rightMargin, -1);
+        }
+        if (mStatus1View != null) {
+            mStatus1View.setGravity(gravity);
+            setSpecificMargins(mStatus1View, leftMargin, -1, rightMargin, -1);
+        }
     }
 
     private void setSpecificMargins(View view, int left, int top, int right,
@@ -817,8 +831,12 @@ class KeyguardStatusViewManager implements OnClickListener {
                 icon.value = CHARGING_ICON;
             } else if (mBatteryLevel < KeyguardUpdateMonitor.LOW_BATTERY_THRESHOLD) {
                 // Battery is low
-                string = getContext().getString(R.string.lockscreen_low_battery);
+                string = getContext().getString(R.string.lockscreen_low_battery, mBatteryLevel);
                 icon.value = BATTERY_LOW_ICON;
+            } else if (mAlwaysShowBattery) {
+                // Discharging
+                string = getContext().getString(R.string.lockscreen_discharging, mBatteryLevel);
+                icon.value = DISCHARGING_ICON;
             }
         } else {
             string = mCarrierText;
@@ -844,8 +862,12 @@ class KeyguardStatusViewManager implements OnClickListener {
                 icon.value = CHARGING_ICON;
             } else if (mBatteryLevel < KeyguardUpdateMonitor.LOW_BATTERY_THRESHOLD) {
                 // Battery is low
-                string = getContext().getString(R.string.lockscreen_low_battery);
+                string = getContext().getString(R.string.lockscreen_low_battery, mBatteryLevel);
                 icon.value = BATTERY_LOW_ICON;
+            } else if (mAlwaysShowBattery) {
+                // Discharging
+                string = getContext().getString(R.string.lockscreen_discharging, mBatteryLevel);
+                icon.value = DISCHARGING_ICON;
             }
         } else if (!inWidgetMode() && mOwnerInfoView == null && mOwnerInfoText != null) {
             // OwnerInfo shows in status if we don't have a dedicated widget

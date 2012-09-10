@@ -3854,6 +3854,9 @@
   <java-symbol type="string" name="second" />
   <java-symbol type="string" name="seconds" />
 
+  <!-- Lock screen always show battery -->
+  <java-symbol type="string" name="lockscreen_discharging" />
+
 <!-- QuickMessage, for editbox background overrides -->
   <public type="drawable" name="edit_text_holo_light" />
   <public type="drawable" name="edit_text_holo_dark" />
