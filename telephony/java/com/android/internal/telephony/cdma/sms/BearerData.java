@@ -18,9 +18,9 @@ package com.android.internal.telephony.cdma.sms;
 
 import android.content.res.Resources;
 import android.telephony.SmsCbCmasInfo;
-import android.telephony.SmsCbMessage;
 import android.telephony.SmsMessage;
 import android.telephony.cdma.CdmaSmsCbProgramData;
+import android.telephony.cdma.CdmaSmsCbProgramResults;
 import android.text.format.Time;
 import android.util.Log;
 
@@ -32,8 +32,6 @@ import com.android.internal.util.BitwiseInputStream;
 import com.android.internal.util.BitwiseOutputStream;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.TimeZone;
 
 import static android.telephony.SmsMessage.ENCODING_16BIT;
@@ -353,7 +351,14 @@ public final class BearerData {
      * {@link android.telephony.cdma.CdmaSmsCbProgramData} objects containing the
      * operation(s) to perform.
      */
-    public List<CdmaSmsCbProgramData> serviceCategoryProgramData;
+    public ArrayList<CdmaSmsCbProgramData> serviceCategoryProgramData;
+
+    /**
+     * The Service Category Program Results subparameter informs the message center
+     * of the results of a Service Category Program Data request.
+     */
+    public ArrayList<CdmaSmsCbProgramResults> serviceCategoryProgramResults;
+
 
     private static class CodingException extends Exception {
         public CodingException(String s) {
@@ -857,6 +862,21 @@ public final class BearerData {
         outStream.skip(6);
     }
 
+    private static void encodeScpResults(BearerData bData, BitwiseOutputStream outStream)
+        throws BitwiseOutputStream.AccessException
+    {
+        ArrayList<CdmaSmsCbProgramResults> results = bData.serviceCategoryProgramResults;
+        outStream.write(8, (results.size() * 4));   // 4 octets per program result
+        for (CdmaSmsCbProgramResults result : results) {
+            int category = result.getCategory();
+            outStream.write(8, category >> 8);
+            outStream.write(8, category);
+            outStream.write(8, result.getLanguage());
+            outStream.write(4, result.getCategoryResult());
+            outStream.skip(4);
+        }
+    }
+
     /**
      * Create serialized representation for BearerData object.
      * (See 3GPP2 C.R1001-F, v1.0, section 4.5 for layout details)
@@ -916,6 +936,10 @@ public final class BearerData {
                 outStream.write(8, SUBPARAM_MESSAGE_STATUS);
                 encodeMsgStatus(bData, outStream);
             }
+            if (bData.serviceCategoryProgramResults != null) {
+                outStream.write(8, SUBPARAM_SERVICE_CATEGORY_PROGRAM_RESULTS);
+                encodeScpResults(bData, outStream);
+            }
             return outStream.toByteArray();
         } catch (BitwiseOutputStream.AccessException ex) {
             Log.e(LOG_TAG, "BearerData encode failed: " + ex);
@@ -935,10 +959,21 @@ public final class BearerData {
             paramBits -= EXPECTED_PARAM_SIZE;
             decodeSuccess = true;
             bData.messageType = inStream.read(4);
-            bData.messageId = inStream.read(8) << 8;
-            bData.messageId |= inStream.read(8);
-            bData.hasUserDataHeader = (inStream.read(1) == 1);
-            inStream.skip(3);
+            // Some Samsung CDMAphones parses messageId differently than other devices
+            // fix it here so that incoming sms works correctly
+            boolean hasSamsungCDMAAlternateMessageIDEncoding = Resources.getSystem()
+                    .getBoolean(com.android.internal.R.bool.config_smsSamsungCdmaAlternateMessageIDEncoding);
+            if (hasSamsungCDMAAlternateMessageIDEncoding) {
+                inStream.skip(4);
+                bData.messageId = inStream.read(8) << 8;
+                bData.messageId |= inStream.read(8);
+                bData.hasUserDataHeader = (inStream.read(8) == 1);
+            } else {
+                bData.messageId = inStream.read(8) << 8;
+                bData.messageId |= inStream.read(8);
+                bData.hasUserDataHeader = (inStream.read(1) == 1);
+                inStream.skip(3);
+            }
         }
         if ((! decodeSuccess) || (paramBits > 0)) {
             Log.d(LOG_TAG, "MESSAGE_IDENTIFIER decode " +
@@ -1638,7 +1673,7 @@ public final class BearerData {
         while (paramBits >= CATEGORY_FIELD_MIN_SIZE) {
             int operation = inStream.read(4);
             int category = (inStream.read(8) << 8) | inStream.read(8);
-            String language = getLanguageCodeForValue(inStream.read(8));
+            int language = inStream.read(8);
             int maxMessages = inStream.read(8);
             int alertOption = inStream.read(4);
             int numFields = inStream.read(8);

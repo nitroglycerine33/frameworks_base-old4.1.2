@@ -381,12 +381,27 @@ public abstract class DataConnection extends StateMachine {
         if (DBG) log("NotifyDisconnectCompleted DisconnectParams=" + dp);
     }
 
+    protected boolean needsOldRilFeature(String feature) {
+        String[] features = SystemProperties.get("ro.telephony.ril.v3", "").split(",");
+        for (String found: features) {
+            if (found.equals(feature))
+                return true;
+        }
+        return false;
+    }
+
     protected int getRilRadioTechnology(int defaultRilRadioTechnology) {
         int rilRadioTechnology;
         if (mRilVersion < 6) {
             rilRadioTechnology = defaultRilRadioTechnology;
         } else {
-            rilRadioTechnology = phone.getServiceState().getRilRadioTechnology() + 2;
+             if (needsOldRilFeature("usehcradio") ) {
+                  rilRadioTechnology = phone.getServiceState().getRilRadioTechnology() - 2;
+               if (rilRadioTechnology != 1) // in reality if it is not 1 something is wrong for hc ??
+		   rilRadioTechnology = 1;
+	       }
+               else
+                  rilRadioTechnology = phone.getServiceState().getRilRadioTechnology() + 2;
         }
         return rilRadioTechnology;
     }
@@ -423,6 +438,14 @@ public abstract class DataConnection extends StateMachine {
      */
     public int getRetryCount() {
         return mRetryMgr.getRetryCount();
+    }
+
+    /**
+     * set retry manager retryCount
+     */
+    public void setRetryCount(int retryCount) {
+        if (DBG) log("setRetryCount: " + retryCount);
+        mRetryMgr.setRetryCount(retryCount);
     }
 
     /**

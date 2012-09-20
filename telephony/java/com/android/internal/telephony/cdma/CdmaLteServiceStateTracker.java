@@ -45,6 +45,8 @@ public class CdmaLteServiceStateTracker extends CdmaServiceStateTracker {
 
     private ServiceState  mLteSS;  // The last LTE state from Voice Registration
 
+    private boolean getSVDO = SystemProperties.getBoolean(TelephonyProperties.PROPERTY_SVDATA, false);
+
     public CdmaLteServiceStateTracker(CDMALTEPhone phone) {
         super(phone);
         mCdmaLtePhone = phone;
@@ -176,7 +178,7 @@ public class CdmaLteServiceStateTracker extends CdmaServiceStateTracker {
                         android.provider.Settings.Secure.PREFERRED_NETWORK_MODE,
                         RILConstants.PREFERRED_NETWORK_MODE);
                 if (DBG) log("pollState: network mode here is = " + networkMode);
-                if ((networkMode == RILConstants.NETWORK_MODE_GLOBAL)
+                if ((getSVDO) || (networkMode == RILConstants.NETWORK_MODE_GLOBAL)
                         || (networkMode == RILConstants.NETWORK_MODE_LTE_ONLY)) {
                     pollingContext[0]++;
                     // RIL_REQUEST_DATA_REGISTRATION_STATE
@@ -492,10 +494,11 @@ public class CdmaLteServiceStateTracker extends CdmaServiceStateTracker {
 
     @Override
     public boolean isConcurrentVoiceAndDataAllowed() {
-        // Note: it needs to be confirmed which CDMA network types
-        // can support voice and data calls concurrently.
-        // For the time-being, the return value will be false.
-        return (mRilRadioTechnology == ServiceState.RIL_RADIO_TECHNOLOGY_LTE);
+        if ((getSVDO) && (mLteSS.getRadioTechnology() !=
+                    ServiceState.RIL_RADIO_TECHNOLOGY_1xRTT))
+            return true;
+        else
+            return (mRilRadioTechnology == ServiceState.RIL_RADIO_TECHNOLOGY_LTE);
     }
 
     /**
