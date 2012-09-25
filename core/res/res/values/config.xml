@@ -887,7 +887,6 @@
     <!-- Configure ring lockscreen center ring offset -->
     <integer name="config_ringCenterOffsetDIP">30</integer>
 
-
     <!-- Boolean to enable stk functionality on Samsung phones -->
     <bool name="config_samsung_stk">false</bool>
     
@@ -899,5 +898,12 @@
 
     <!-- Configure ring lockscreen center secondary ring(s) offset -->
     <integer name="config_ringSecCenterOffsetDIP">30</integer>
+
+    <!-- Workaround for devices with broken keyboards -->
+    <bool name="config_forceDisableHardwareKeyboard">true</bool>
+
+    <!-- Flag indicating whether we should enable automatic brightness for
+         the button and keyboard backlights. -->
+    <bool name="config_autoBrightnessButtonKeyboard">true</bool>
 
 </resources>
