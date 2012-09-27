@@ -204,28 +204,7 @@
 
     </RelativeLayout>
 
-    <Space android:layout_gravity="fill" />
-
-    <!-- emergency call button shown when sim is PUKd and tab_selector is hidden -->
-    <Button
-        android:id="@+id/emergencyCallButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dip"
-        android:layout_marginRight="16dip"
-        android:layout_gravity="right"
-        android:drawableLeft="@*android:drawable/lockscreen_emergency_button"
-        style="?android:attr/buttonBarButtonStyle"
-        android:drawablePadding="4dip"
-        android:text="@*android:string/lockscreen_emergency_call"
-        android:visibility="gone"
-        />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="302dip">
-
-    <!-- CyanogenMod Calendar Panel -->
+   <!-- CyanogenMod Calendar Panel -->
     <LinearLayout
         android:id="@+id/calendar_panel"
         android:layout_width="match_parent"
@@ -286,6 +265,27 @@
         </RelativeLayout>
 
     </LinearLayout>
+
+    <Space android:layout_gravity="fill" />
+
+    <!-- emergency call button shown when sim is PUKd and tab_selector is hidden -->
+    <Button
+        android:id="@+id/emergencyCallButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dip"
+        android:layout_marginRight="16dip"
+        android:layout_gravity="right"
+        android:drawableLeft="@*android:drawable/lockscreen_emergency_button"
+        style="?android:attr/buttonBarButtonStyle"
+        android:drawablePadding="4dip"
+        android:text="@*android:string/lockscreen_emergency_call"
+        android:visibility="gone"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="302dip">
 
         <com.android.internal.widget.multiwaveview.GlowPadView
             android:id="@+id/unlock_widget"

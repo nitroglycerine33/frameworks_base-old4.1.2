@@ -45,6 +45,4 @@ public interface LocalPowerManager {
 
     void setScreenBrightnessOverride(int brightness);
     void setButtonBrightnessOverride(int brightness);
-
-    void cpuBoost(int duration);
 }
