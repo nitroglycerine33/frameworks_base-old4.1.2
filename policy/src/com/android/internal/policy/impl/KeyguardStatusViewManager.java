@@ -436,7 +436,7 @@ class KeyguardStatusViewManager implements OnClickListener {
                 String conditionCode = w.condition_code;
                 String condition_filename = "weather_" + conditionCode;
                 int resID = res.getIdentifier(condition_filename, "drawable",
-                        getContext().getPackageName());
+                        "android");
 
                 if (DEBUG)
                     Log.d("Weather", "Condition:" + conditionCode + " ID:" + resID);
@@ -989,7 +989,14 @@ class KeyguardStatusViewManager implements OnClickListener {
                 break;
         }
 
-        setCarrierText(carrierText);
+        String customLabel;
+        customLabel = Settings.System.getString(getContext().getContentResolver(),
+            Settings.System.CUSTOM_CARRIER_LABEL);
+        if(customLabel == null || customLabel.length() == 0)
+            setCarrierText(carrierText);
+        else
+            setCarrierText(customLabel);
+
         setCarrierHelpText(carrierHelpTextId);
         updateEmergencyCallButtonState(mPhoneState);
     }
