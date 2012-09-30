@@ -111,6 +111,7 @@ import com.android.systemui.statusbar.policy.NetworkController;
 import com.android.systemui.statusbar.policy.NotificationRowLayout;
 
 import java.io.FileDescriptor;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
@@ -482,7 +483,7 @@ public class PhoneStatusBar extends BaseStatusBar {
         try {
             boolean showNav = mWindowManager.hasNavigationBar();
             if (DEBUG) Slog.v(TAG, "hasNavigationBar=" + showNav);
-            if (showNav && !mRecreating) {
+            if (showNav) {
                 mNavigationBarView =
                     (NavigationBarView) View.inflate(context, R.layout.navigation_bar, null);
 
@@ -500,11 +501,6 @@ public class PhoneStatusBar extends BaseStatusBar {
         mNotificationIcons.setOverflowIndicator(mMoreIcon);
         mIcons = (LinearLayout)mStatusBarView.findViewById(R.id.icons);
         mTickerView = mStatusBarView.findViewById(R.id.ticker);
-
-        /* Destroy the old widget before recreating the expanded dialog
-           to make sure there are no context issues */
-        if (mRecreating)
-            mPowerWidget.destroyWidget();
 
         mPile = (NotificationRowLayout)mStatusBarWindow.findViewById(R.id.latestItems);
         mPile.setLayoutTransitionsEnabled(false);
@@ -525,48 +521,10 @@ public class PhoneStatusBar extends BaseStatusBar {
         mClearButton.setVisibility(View.GONE);
         mClearButton.setEnabled(false);
         mDateView = (DateView)mStatusBarWindow.findViewById(R.id.date);
-        mDateView.getDate().addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                computeDateViewWidth();
-            }
-        });
-        mClockView = (Clock)mStatusBarWindow.findViewById(R.id.clock);
-        mClockView.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                computeDateViewWidth();
-            }
-        });
         mSettingsButton = mStatusBarWindow.findViewById(R.id.settings_button);
         mSettingsButton.setOnClickListener(mSettingsButtonListener);
         mRotationButton = (RotationToggle) mStatusBarWindow.findViewById(R.id.rotation_lock_button);
-        mButtonsBar = mStatusBarWindow.findViewById(R.id.buttons_bar);
-
-        // Compute the DateView width
-        mDateView.post(new Runnable() {
-            @Override
-            public void run() {
-                computeDateViewWidth();
-            }
-        });
-
+        
         mCarrierLabel = (TextView)mStatusBarWindow.findViewById(R.id.carrier_label);
         mCarrierLabel.setVisibility(mCarrierLabelVisible ? View.VISIBLE : View.INVISIBLE);
 
@@ -702,7 +660,9 @@ public class PhoneStatusBar extends BaseStatusBar {
         // a bit jarring
         mRecentsPanel.setMinSwipeAlpha(0.03f);
         if (mNavigationBarView != null) {
-            mNavigationBarView.setListener(mRecentsClickListener, mRecentsPanel, mHomeSearchActionListener);
+        	if (mNavigationBarView.getRecentsButton() !=null) {
+            mNavigationBarView.getRecentsButton().setOnTouchListener(mRecentsPanel);
+        	}
         }
     }
 
@@ -786,7 +746,14 @@ public class PhoneStatusBar extends BaseStatusBar {
 
     private void prepareNavigationBarView() {
         mNavigationBarView.reorient();
-        mNavigationBarView.setListener(mRecentsClickListener,mRecentsPanel, mHomeSearchActionListener);
+        
+        if (mNavigationBarView.getRecentsButton() != null){ 
+        	mNavigationBarView.getRecentsButton().setOnClickListener(mRecentsClickListener);
+        	mNavigationBarView.getRecentsButton().setOnTouchListener(mRecentsPanel);
+        }
+        if (mNavigationBarView.getHomeButton() != null) {
+        		mNavigationBarView.getHomeButton().setOnTouchListener(mHomeSearchActionListener);
+        }
         updateSearchPanel();
     }
 
@@ -1139,8 +1106,7 @@ public class PhoneStatusBar extends BaseStatusBar {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         if (mClearButton.getAlpha() <= 0.0f) {
-                            mClearButton.setVisibility(View.GONE);
-                            computeDateViewWidth();
+                            mClearButton.setVisibility(View.INVISIBLE);
                         }
                     }
 
@@ -1148,7 +1114,6 @@ public class PhoneStatusBar extends BaseStatusBar {
                     public void onAnimationStart(Animator animation) {
                         if (mClearButton.getAlpha() <= 0.0f) {
                             mClearButton.setVisibility(View.VISIBLE);
-                            computeDateViewWidth();
                         }
                     }
                 });
@@ -1156,8 +1121,7 @@ public class PhoneStatusBar extends BaseStatusBar {
             }
         } else {
             mClearButton.setAlpha(clearable ? 1.0f : 0.0f);
-            mClearButton.setVisibility(clearable ? View.VISIBLE : View.GONE);
-            computeDateViewWidth();
+            mClearButton.setVisibility(clearable ? View.VISIBLE : View.INVISIBLE);
         }
         mClearButton.setEnabled(clearable);
 
@@ -1641,9 +1605,6 @@ public class PhoneStatusBar extends BaseStatusBar {
         }
 
         mCloseView.setPressed(true);
-
-        // Compute the space of the DateView
-        computeDateViewWidth();
 
         mTracking = true;
         setPileLayers(View.LAYER_TYPE_HARDWARE);
@@ -2189,47 +2150,8 @@ public class PhoneStatusBar extends BaseStatusBar {
         pw.print("  mNavigationBarView=");
         if (mNavigationBarView == null) {
             pw.println("null");
-        } else {
-            mNavigationBarView.dump(fd, pw, args);
         }
 
-        if (DUMPTRUCK) {
-            synchronized (mNotificationData) {
-                int N = mNotificationData.size();
-                pw.println("  notification icons: " + N);
-                for (int i=0; i<N; i++) {
-                    NotificationData.Entry e = mNotificationData.get(i);
-                    pw.println("    [" + i + "] key=" + e.key + " icon=" + e.icon);
-                    StatusBarNotification n = e.notification;
-                    pw.println("         pkg=" + n.pkg + " id=" + n.id + " score=" + n.score);
-                    pw.println("         notification=" + n.notification);
-                    pw.println("         tickerText=\"" + n.notification.tickerText + "\"");
-                }
-            }
-
-            int N = mStatusIcons.getChildCount();
-            pw.println("  system icons: " + N);
-            for (int i=0; i<N; i++) {
-                StatusBarIconView ic = (StatusBarIconView) mStatusIcons.getChildAt(i);
-                pw.println("    [" + i + "] icon=" + ic);
-            }
-
-            if (false) {
-                pw.println("see the logcat for a dump of the views we have created.");
-                // must happen on ui thread
-                mHandler.post(new Runnable() {
-                        public void run() {
-                            mStatusBarView.getLocationOnScreen(mAbsPos);
-                            Slog.d(TAG, "mStatusBarView: ----- (" + mAbsPos[0] + "," + mAbsPos[1]
-                                    + ") " + mStatusBarView.getWidth() + "x"
-                                    + getStatusBarHeight());
-                            mStatusBarView.debug();
-                        }
-                    });
-            }
-        }
-
-        mNetworkController.dump(fd, pw, args);
     }
 
     @Override
@@ -2502,7 +2424,6 @@ public class PhoneStatusBar extends BaseStatusBar {
                 updateResources();
                 repositionNavigationBar();
                 updateExpandedViewPos(EXPANDED_LEAVE_ALONE);
-                computeDateViewWidth();
             }
         }
     };
@@ -2528,61 +2449,6 @@ public class PhoneStatusBar extends BaseStatusBar {
         }
     }
 
-    private static void copyNotifications(ArrayList<Pair<IBinder, StatusBarNotification>> dest,
-            NotificationData source) {
-        int N = source.size();
-        for (int i = 0; i < N; i++) {
-            NotificationData.Entry entry = source.get(i);
-            dest.add(Pair.create(entry.key, entry.notification));
-        }
-    }
-
-    private void recreateStatusBar() {
-        mRecreating = true;
-        mStatusBarContainer.removeAllViews();
-
-        // extract icons from the soon-to-be recreated viewgroup.
-        int nIcons = mStatusIcons.getChildCount();
-        ArrayList<StatusBarIcon> icons = new ArrayList<StatusBarIcon>(nIcons);
-        ArrayList<String> iconSlots = new ArrayList<String>(nIcons);
-        for (int i = 0; i < nIcons; i++) {
-            StatusBarIconView iconView = (StatusBarIconView)mStatusIcons.getChildAt(i);
-            icons.add(iconView.getStatusBarIcon());
-            iconSlots.add(iconView.getStatusBarSlot());
-        }
-
-        // extract notifications.
-        int nNotifs = mNotificationData.size();
-        ArrayList<Pair<IBinder, StatusBarNotification>> notifications =
-                new ArrayList<Pair<IBinder, StatusBarNotification>>(nNotifs);
-        copyNotifications(notifications, mNotificationData);
-        mNotificationData.clear();
-
-        makeStatusBarView();
-        repositionNavigationBar();
-        mNavigationBarView.updateResources();
-
-        // recreate StatusBarIconViews.
-        for (int i = 0; i < nIcons; i++) {
-            StatusBarIcon icon = icons.get(i);
-            String slot = iconSlots.get(i);
-            addIcon(slot, i, i, icon);
-        }
-
-        // recreate notifications.
-        for (int i = 0; i < nNotifs; i++) {
-            Pair<IBinder, StatusBarNotification> notifData = notifications.get(i);
-            addNotificationViews(notifData.first, notifData.second);
-        }
-
-        setAreThereNotifications();
-
-        mStatusBarContainer.addView(mStatusBarWindow);
-
-        updateExpandedViewPos(EXPANDED_LEAVE_ALONE);
-        mRecreating = false;
-    }
-
     /**
      * Reload some of our resources when the configuration changes.
      *
@@ -2599,7 +2465,11 @@ public class PhoneStatusBar extends BaseStatusBar {
         if (newTheme != null &&
                 (mCurrentTheme == null || !mCurrentTheme.equals(newTheme))) {
             mCurrentTheme = (CustomTheme)newTheme.clone();
-            recreateStatusBar();
+            try {
+                Runtime.getRuntime().exec("pkill -TERM -f com.android.systemui");
+            } catch (IOException e) {
+                // we're screwed here fellas
+            }
         } else {
 
             if (mClearButton instanceof TextView) {
@@ -2713,77 +2583,7 @@ public class PhoneStatusBar extends BaseStatusBar {
 
     @Override
     protected boolean shouldDisableNavbarGestures() {
-        return mExpanded || NavigationBarView.getEditMode() || (mDisabled & StatusBarManager.DISABLE_HOME) != 0;
-    }
-
-    private void computeDateViewWidth() {
-        // Compute the max length that the DateView & buttons could have.
-        try {
-            // Ensure that all components are loaded
-            if (mButtonsBar == null ||
-                mClearButton == null ||
-                mDateView == null ||
-                mDateView.getDoW() == null ||
-                mDateView.getDate() == null) {
-
-                return;
-            }
-
-            // Obtain the screen width. StatusBar width is not valid on screen rotation
-            // We need the real size, and status bar has the old width
-            WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
-            Display display = wm.getDefaultDisplay();
-            Point size = new Point();
-            display.getSize(size);
-            int width = size.x;
-
-            // Retrieve the date of the DateView
-            CharSequence date = mDateView.getDate().getText();
-            if (date == null) {
-                return;
-            }
-
-            // Get the width of the elements of the status bar
-            int buttonsBarWidth = 0;
-            if (mButtonsBar.getVisibility() != View.GONE) {
-                buttonsBarWidth = mButtonsBar.getWidth();
-            }
-            int clearButtonWidth = 0;
-            if (mClearButton.getVisibility() != View.GONE) {
-                clearButtonWidth = mClearButton.getWidth();
-            }
-
-            // Create a temporary paint object for testing
-            Paint mTestPaint = new Paint();
-            mTestPaint.set(mDateView.getDate().getPaint());
-            float dateViewWidth = mTestPaint.measureText(date.toString().toUpperCase());
-
-            // Calculate DateView room width
-            int maxRoomWidth = width - clearButtonWidth - buttonsBarWidth - mDateView.getLeft();
-
-            // Compute the new width (if text fits in screen show all; otherwise stretch to fit)
-            int newWidth = (int)dateViewWidth;
-            if (maxRoomWidth < newWidth) {
-                newWidth = maxRoomWidth;
-            }
-            mDateView.getLayoutParams().width = newWidth;
-            mDateView.getDoW().getLayoutParams().width = newWidth;
-            mDateView.getDate().getLayoutParams().width = newWidth;
-            mDateView.measure(newWidth, mDateView.getHeight());
-
-            if (DEBUG) {
-                System.out.println(
-                        String.format(
-                                "width: %s, buttonsBarWidth: %s, clearButtonWidth: %s, " +
-                                "dateViewWidth: %s, maxRoomWidth: %s, newWidth: %s",
-                                width, buttonsBarWidth, clearButtonWidth,
-                                dateViewWidth, maxRoomWidth, newWidth));
-            }
-
-         }catch (Exception ex) {
-             // Audit
-             Slog.e(TAG, "Problem computing the status bar DateView width.", ex);
-         }
+        return mExpanded || (mDisabled & StatusBarManager.DISABLE_HOME) != 0;
     }
 
     private static class FastColorDrawable extends Drawable {
