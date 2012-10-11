@@ -436,7 +436,7 @@ class KeyguardStatusViewManager implements OnClickListener {
                 String conditionCode = w.condition_code;
                 String condition_filename = "weather_" + conditionCode;
                 int resID = res.getIdentifier(condition_filename, "drawable",
-                        "android");
+                        getContext().getPackageName());
 
                 if (DEBUG)
                     Log.d("Weather", "Condition:" + conditionCode + " ID:" + resID);
