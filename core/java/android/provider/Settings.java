@@ -2454,9 +2454,9 @@ public final class Settings {
          * @hide
          */
         public static final String STATUS_BAR_BATTERY = "status_bar_battery";
-
+		
         /**
-         * Whether to show the clock in status bar
+         * Whether to show the clock in status bar for tablets
          * of the stock battery icon
          * 0: don't show the clock
          * 1: show the clock
@@ -2464,6 +2464,17 @@ public final class Settings {
          * @hide
          */
         public static final String STATUS_BAR_CLOCK = "status_bar_clock";
+
+        /**
+         * Whether to show the clock in status bar for phones
+         * of the stock battery icon
+         * 0: don't show the clock
+         * 1: Right clock
+         * 2: Center clock
+         * default: 1
+         * @hide
+         */
+        public static final String STATUS_BAR_CLOCK_STYLE = "status_bar_clock_style";
 
         /**
          * Whether to show the signal text or signal bars.
@@ -2880,7 +2891,6 @@ public final class Settings {
 	 */
         public static final String NAVIGATION_BAR_BUTTON_ALPHA = "navigation_bar_button_alpha";
 
-<<<<<<< HEAD
          /**
          * Navigation bar height in portrait
          * @hide

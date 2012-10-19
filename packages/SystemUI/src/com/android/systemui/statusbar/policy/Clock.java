@@ -38,7 +38,9 @@ import android.text.style.RelativeSizeSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -52,23 +54,37 @@ import com.android.internal.R;
  * minutes.
  */
 public class Clock extends TextView {
-    private boolean mAttached;
-    private Calendar mCalendar;
-    private String mClockFormatString;
-    private SimpleDateFormat mClockFormat;
+    protected boolean mAttached;
+    protected Calendar mCalendar;
+    protected String mClockFormatString;
+    protected SimpleDateFormat mClockFormat;
 
-    private static final int AM_PM_STYLE_NORMAL  = 0;
-    private static final int AM_PM_STYLE_SMALL   = 1;
-    private static final int AM_PM_STYLE_GONE    = 2;
+    public static final int AM_PM_STYLE_NORMAL  = 0;
+    public static final int AM_PM_STYLE_SMALL   = 1;
+    public static final int AM_PM_STYLE_GONE    = 2;
 
-    private static int AM_PM_STYLE = AM_PM_STYLE_GONE;
+    public int AM_PM_STYLE = AM_PM_STYLE_GONE;
 
-    private int mAmPmStyle;
-    private boolean mShowClock;
+    protected int mAmPmStyle;
+
+    public static final int CLOCK_STYLE_NOCLOCK  = 0;
+    public static final int CLOCK_STYLE_RIGHT    = 1;
+    public static final int CLOCK_STYLE_CENTER   = 2;
+
+	    // Device types
+    private static final int DEVICE_PHONE = 0;
+    private static final int DEVICE_HYBRID = 1;
+    private static final int DEVICE_TABLET = 2;
+
+    // Device type reference
+    private static int mDeviceType = -1;
+
+    protected int mClockStyle;
+    protected boolean mShowClock;
 
     Handler mHandler;
 
-    class SettingsObserver extends ContentObserver {
+    protected class SettingsObserver extends ContentObserver {
         SettingsObserver(Handler handler) {
             super(handler);
         }
@@ -79,6 +95,8 @@ public class Clock extends TextView {
                     Settings.System.STATUS_BAR_AM_PM), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_CLOCK), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CLOCK_STYLE), false, this);
         }
 
         @Override public void onChange(boolean selfChange) {
@@ -136,9 +154,10 @@ public class Clock extends TextView {
             getContext().unregisterReceiver(mIntentReceiver);
             mAttached = false;
         }
+
     }
 
-    private final BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
+    protected final BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -153,12 +172,12 @@ public class Clock extends TextView {
         }
     };
 
-    final void updateClock() {
+    protected final void updateClock() {
         mCalendar.setTimeInMillis(System.currentTimeMillis());
         setText(getSmallTime());
     }
 
-    private final CharSequence getSmallTime() {
+    protected final CharSequence getSmallTime() {
         Context context = getContext();
         boolean b24 = DateFormat.is24HourFormat(context);
         int res;
@@ -237,7 +256,40 @@ public class Clock extends TextView {
 
     }
 
-    private void updateSettings(){
+    private static int getScreenType(Context con) {
+        if (mDeviceType == -1) {
+            WindowManager wm = (WindowManager)con.getSystemService(Context.WINDOW_SERVICE);
+            android.view.Display display = wm.getDefaultDisplay();
+            int shortSize = Math.min(display.getRawHeight(), display.getRawWidth());
+            int shortSizeDp = shortSize * DisplayMetrics.DENSITY_DEFAULT / DisplayMetrics.DENSITY_DEVICE;
+            if (shortSizeDp < 600) {
+                // 0-599dp: "phone" UI with a separate status & navigation bar
+                mDeviceType =  DEVICE_PHONE;
+            } else if (shortSizeDp < 720) {
+                // 600-719dp: "phone" UI with modifications for larger screens
+                mDeviceType = DEVICE_HYBRID;
+            } else {
+                // 720dp: "tablet" UI with a single combined status & navigation bar
+                mDeviceType = DEVICE_TABLET;
+            }
+        }
+        return mDeviceType;
+    }
+
+    public static boolean isPhone(Context con) {
+        return getScreenType(con) == DEVICE_PHONE;
+    }
+
+    public static boolean isHybrid(Context con) {
+        return getScreenType(con) == DEVICE_HYBRID;
+    }
+
+    public static boolean isTablet(Context con) {
+        return getScreenType(con) == DEVICE_TABLET;
+    }
+
+
+    protected void updateSettings(){
         ContentResolver resolver = mContext.getContentResolver();
 
         mAmPmStyle = (Settings.System.getInt(resolver,
@@ -251,10 +303,23 @@ public class Clock extends TextView {
                 updateClock();
             }
         }
+        if (mDeviceType == 2)  {
+        	mShowClock = (Settings.System.getInt(resolver,Settings.System.STATUS_BAR_CLOCK, 1) == 1);
+			updateClockVisibilityTablet(true);
+        } else {
+            mClockStyle = (Settings.System.getInt(resolver,Settings.System.STATUS_BAR_CLOCK_STYLE, 1));
+            updateClockVisibility(true);
+        }		
+    }
 
-        mShowClock = (Settings.System.getInt(resolver,
-                Settings.System.STATUS_BAR_CLOCK, 1) == 1);
-
+    public void updateClockVisibility(boolean show) {
+        if (mClockStyle == CLOCK_STYLE_RIGHT)
+            setVisibility(show ? View.VISIBLE : View.GONE);
+        else
+            setVisibility(View.GONE);
+    }
+	
+	public void updateClockVisibilityTablet(boolean show) {
         if(mShowClock)
             setVisibility(View.VISIBLE);
         else
