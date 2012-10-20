@@ -2393,6 +2393,34 @@ public final class Settings {
         public static final String NAV_BUTTONS = "nav_buttons";
 
         /**
+         * Navigation Bar show switch
+         *
+         * @hide
+         */
+        public static final String NAVIGATION_BAR_SHOW = "navigation_bar_show";
+
+        /**
+         * Enable Menu key
+         *
+         * @hide
+         */
+        public static final String KEY_MENU_ENABLED = "key_menu_enabled";
+
+        /**
+         * Enable Back key
+         *
+         * @hide
+         */
+        public static final String KEY_BACK_ENABLED = "key_back_enabled";
+
+        /**
+         * Enable Home key
+         *
+         * @hide
+         */
+        public static final String KEY_HOME_ENABLED = "key_home_enabled";
+
+        /**
         * Notification Power Widget - Custom Brightness Mode
         * @hide
         */
@@ -2908,20 +2936,6 @@ public final class Settings {
          * @hide
          */
         public static final String NAVIGATION_BAR_WIDTH = "navigation_bar_width";
-
-         /**
-          * Used to determine if the NavBar should be enabled on devices that do not
-          * otherwise have a NavBar
-         * @hide
-         */
-        public static final String NAVIGATION_BAR_SHOW = "navigation_bar_show";
-
-        /**
-         * Used to determine if NavBar is currently shown or hidden as a user choice
-         *
-         * @hide
-         */
-        public static final String NAVIGATION_BAR_SHOW_NOW = "navigation_bar_show_now";
 
 	/**
          * User interface mode. This is used to change the UI mode forcing it to
