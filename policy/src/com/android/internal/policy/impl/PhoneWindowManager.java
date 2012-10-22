@@ -1325,7 +1325,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 else if (navBarOverride.equals("0")) mHasNavigationBar = true;
             }
             // Override this by possible System Setting
-            int showNavBar = Settings.System.getInt(mContext.getContentResolver(), Settings.System.NAVIGATION_BAR_SHOW, 0);
+            int showNavBar = Settings.System.getInt(mContext.getContentResolver(), Settings.System.NAVIGATION_BAR_SHOW, 1);
             if (showNavBar == 1 ) {
                 mHasNavigationBar = true;
             }
@@ -1383,7 +1383,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             mVolumeWakeScreen = (Settings.System.getInt(resolver,
                     Settings.System.VOLUME_WAKE_SCREEN, 0) == 1);
             mVolBtnMusicControls = (Settings.System.getInt(resolver,
-                    Settings.System.VOLBTN_MUSIC_CONTROLS, 1) == 1);
+                    Settings.System.VOLBTN_MUSIC_CONTROLS, 0) == 1);
 
             boolean keyRebindingEnabled = Settings.System.getInt(resolver,
                     Settings.System.HARDWARE_KEY_REBINDING, 0) == 1;
