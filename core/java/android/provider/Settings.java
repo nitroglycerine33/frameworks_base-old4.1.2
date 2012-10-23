@@ -2820,7 +2820,7 @@ public final class Settings {
         public static final String POWER_MENU_PROFILES_ENABLED = "power_menu_profiles_enabled";
 
         /**
-		 * Statusbar State
+	 * Statusbar State
          * @hide
          */
         public static final String EXPANDED_DESKTOP_STATE = "expanded_desktop_state";
@@ -2965,7 +2965,10 @@ public final class Settings {
         public static final String TABLET_UI = "tablet_ui";
 
         /**
-         * Show the pending notification counts as overlays on the status bar
+         * Whether to show the alarm icon in the status bar
+         * @hide
+         */
+        public static final String STATUSBAR_SHOW_ALARM = "statusbar_show_alarm";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings

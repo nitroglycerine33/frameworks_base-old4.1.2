@@ -47,7 +47,7 @@ public class NavbarEditor implements OnTouchListener {
      * Subset of mIds, to differentiate small/side buttons
      * since they can be assigned additional functionality
      */
-    public static final int[] smallButtonIds = {R.id.one,R.id.six};
+    public static final int[] smallButtonIds = {R.id.one, R.id.six};
 
     /**
      * Map which holds references to supported/available buttons.
