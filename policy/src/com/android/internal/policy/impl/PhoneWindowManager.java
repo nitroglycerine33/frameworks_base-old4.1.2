@@ -381,6 +381,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     int mCarDockRotation;
     int mDeskDockRotation;
     int mHdmiRotation;
+    int mHasNavBar;
 
     int mUserRotationMode = WindowManagerPolicy.USER_ROTATION_FREE;
     int mUserRotation = Surface.ROTATION_0;
@@ -1315,8 +1316,15 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         }
 
         if (!mHasSystemNavBar) {
-            mHasNavigationBar = mContext.getResources().getBoolean(
-                    com.android.internal.R.bool.config_showNavigationBar);
+
+            final boolean showByDefault = mContext.getResources().getBoolean(
+                     com.android.internal.R.bool.config_showNavigationBar);
+	    if (showByDefault == true ) {
+                mHasNavBar = 1;
+            }
+            if (showByDefault == false) {
+                mHasNavBar = 0;
+            }
             // Allow a system property to override this. Used by the emulator.
             // See also hasNavigationBar().
             String navBarOverride = SystemProperties.get("qemu.hw.mainkeys");
@@ -1325,7 +1333,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 else if (navBarOverride.equals("0")) mHasNavigationBar = true;
             }
             // Override this by possible System Setting
-            int showNavBar = Settings.System.getInt(mContext.getContentResolver(), Settings.System.NAVIGATION_BAR_SHOW, 1);
+            int showNavBar = Settings.System.getInt(mContext.getContentResolver(), Settings.System.NAVIGATION_BAR_SHOW, mHasNavBar);
             if (showNavBar == 1 ) {
                 mHasNavigationBar = true;
             }
@@ -1383,7 +1391,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             mVolumeWakeScreen = (Settings.System.getInt(resolver,
                     Settings.System.VOLUME_WAKE_SCREEN, 0) == 1);
             mVolBtnMusicControls = (Settings.System.getInt(resolver,
-                    Settings.System.VOLBTN_MUSIC_CONTROLS, 0) == 1);
+                    Settings.System.VOLBTN_MUSIC_CONTROLS, 1) == 1);
 
             boolean keyRebindingEnabled = Settings.System.getInt(resolver,
                     Settings.System.HARDWARE_KEY_REBINDING, 0) == 1;
