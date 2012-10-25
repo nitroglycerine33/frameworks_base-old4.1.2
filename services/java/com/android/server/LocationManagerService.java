@@ -2133,13 +2133,7 @@ public class LocationManagerService extends ILocationManager.Stub implements Run
 
                 final ConnectivityManager connManager = (ConnectivityManager) context
                         .getSystemService(Context.CONNECTIVITY_SERVICE);
-                final NetworkInfo retInfo =
-                        (NetworkInfo) intent.getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO);
-
-                // Pull the latest data. Note we cannot use getActiveNetworkInfo() here as this
-                // broadcast may be for a different mobile type than the current dominant connection,
-                // such as SUPL, and GpsLocationProvider needs to process those.
-                final NetworkInfo info = connManager.getNetworkInfo(retInfo.getType());
+		final NetworkInfo info = connManager.getActiveNetworkInfo();
 
                 // Notify location providers of current network state
                 synchronized (mLock) {
