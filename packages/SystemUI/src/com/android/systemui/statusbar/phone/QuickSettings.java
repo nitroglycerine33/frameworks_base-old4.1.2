@@ -354,18 +354,6 @@ class QuickSettings {
 					startSettingsActivity(android.provider.Settings.ACTION_SETTINGS);
 				}
 			});
-			settingsTile.setOnLongClickListener(new View.OnLongClickListener() {
-				@Override
-				public boolean onLongClick(View v) {
-					Intent controlPanelIntent = new Intent();
-					controlPanelIntent.setClassName("com.TwinBlade.quicksettingscontrolpanel", "com.TwinBlade.quicksettingscontrolpanel.Main"); 
-					controlPanelIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					mContext.startActivity(controlPanelIntent);
-					
-					mBar.collapseAllPanels(true);
-					return true;
-				}
-			});
 			mModel.addSettingsTile(settingsTile, new QuickSettingsModel.RefreshCallback() {
 				@Override
 				public void refreshView(QuickSettingsTileView view, State state) {
