@@ -21,6 +21,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.os.Handler;
 import android.provider.Settings;
@@ -111,15 +112,10 @@ public class BatteryText extends TextView {
         int level = intent.getIntExtra("level", 0);
         boolean plugged = intent.getIntExtra("plugged", 0) != 0;
 
-        if (!mBattColorAllow) {
-            mBattTextColor = Settings.System.getInt(resolver, Settings.System.BATTERY_TEXT_COLOR_STOCK, 0xFF33B5E5);
-        } else if (plugged) {
-            mBattTextColor = Settings.System.getInt(resolver, Settings.System.BATTERY_TEXT_COLOR_CHARGE, 0xFF00FF00);
-        } else if (level > 15) {
-            mBattTextColor = Settings.System.getInt(resolver, Settings.System.BATTERY_TEXT_COLOR_NORMAL, 0xFF33B5E5);
-        } else {
-            mBattTextColor = Settings.System.getInt(resolver, Settings.System.BATTERY_TEXT_COLOR_LOW, 0xFFFF0000);
-        }
+	//use holo blue light to allow theme changer to control this
+	mBattTextColor = mContext.getResources().getColor(
+	com.android.internal.R.color.holo_blue_light);
+
         setTextColor(mBattTextColor);
     }
 
@@ -149,20 +145,11 @@ public class BatteryText extends TextView {
         mBattColorAllow = (Settings.System.getInt(resolver, Settings.System.BATTERY_TEXT_COLOR_ALLOWED, 0) == 1);
 
         if (!mBattColorAllow) {
-            mBattTextColor = Settings.System.getInt(resolver, Settings.System.BATTERY_TEXT_COLOR_STOCK, 0xFF33B5E5);
             setTextColor(mBattTextColor);
         } else { 
 	      Intent batteryIntent = mContext.getApplicationContext().registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 	      int level = batteryIntent.getIntExtra("level", 0);
 	      boolean plugged = batteryIntent.getIntExtra("plugged", 0) != 0;
-
-              if (plugged) {
-                  mBattTextColor = Settings.System.getInt(resolver, Settings.System.BATTERY_TEXT_COLOR_CHARGE, 0xFF00FF00);
-              } else if (level > 15) {
-                  mBattTextColor = Settings.System.getInt(resolver, Settings.System.BATTERY_TEXT_COLOR_NORMAL, 0xFF33B5E5);
-              } else {
-                  mBattTextColor = Settings.System.getInt(resolver, Settings.System.BATTERY_TEXT_COLOR_LOW, 0xFFFF0000);
-              }
               setTextColor(mBattTextColor);
         }
 
