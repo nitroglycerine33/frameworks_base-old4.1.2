@@ -73,6 +73,9 @@ import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlSerializer;
 
 import java.io.File;
+
+import com.android.internal.app.ThemeUtils;
+
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -113,6 +116,7 @@ public class NotificationManagerService extends INotificationManager.Stub
     private static final boolean ENABLE_BLOCKED_TOASTS = true;
 
     final Context mContext;
+    Context mUiContext;
     final IActivityManager mAm;
     final IBinder mForegroundToken = new Binder();
 
@@ -503,6 +507,13 @@ public class NotificationManagerService extends INotificationManager.Stub
         }
     };
 
+    private BroadcastReceiver mThemeChangeReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            mUiContext = null;
+        }
+    };
+
     private BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -651,6 +662,7 @@ public class NotificationManagerService extends INotificationManager.Stub
 
         SettingsObserver observer = new SettingsObserver(mHandler);
         observer.observe();
+        ThemeUtils.registerThemeChangeReceiver(mContext, mThemeChangeReceiver);
     }
 
     void systemReady() {
@@ -1420,6 +1432,13 @@ public class NotificationManagerService extends INotificationManager.Stub
             }
         }
         return -1;
+    }
+
+    private Context getUiContext() {
+        if (mUiContext == null) {
+            mUiContext = ThemeUtils.createUiContext(mContext);
+        }
+        return mUiContext != null ? mUiContext : mContext;
     }
 
     private void updateNotificationPulse() {
