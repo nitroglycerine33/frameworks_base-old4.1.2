@@ -230,17 +230,6 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
     private QuickSettingsTileView mSettingsTile;
     private RefreshCallback mSettingsCallback;
     private State mSettingsState = new State();
-	
-	private String SETTINGS = "QS_Settings";
-	private String BRIGHTNESS = "QS_Brightness";
-	private String VOLUME = "QS_Volume";
-	private String BATTERY = "QS_Battery";
-	private String ROTATION = "QS_Rotation";
-	private String AIRPLANE = "QS_Airplane";
-	private String WIFI = "QS_Wifi";
-	private String DATA = "QS_Data";
-	private String BT = "QS_BT";
-	private String SCREEN = "QS_Screen";
 
     public QuickSettingsModel(Context context) {
         mContext = context;
@@ -279,12 +268,10 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
         mSettingsCallback = cb;
         refreshSettingsTile();
     }
-    void refreshSettingsTile() {		
-		Resources r = mContext.getResources();
-		mSettingsState.label = r.getString(R.string.quick_settings_settings_label);
-		if (isToggleEnabled(SETTINGS)) {
-			mSettingsCallback.refreshView(mSettingsTile, mSettingsState);
-		}
+    void refreshSettingsTile() {
+        Resources r = mContext.getResources();
+        mSettingsState.label = r.getString(R.string.quick_settings_settings_label);
+        mSettingsCallback.refreshView(mSettingsTile, mSettingsState);
     }
 
     // User
@@ -296,7 +283,7 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
     void setUserTileInfo(String name, Drawable avatar) {
         mUserState.label = name;
         mUserState.avatar = avatar;
-		mUserCallback.refreshView(mUserTile, mUserState);
+        mUserCallback.refreshView(mUserTile, mUserState);
     }
 
     // Time
@@ -362,9 +349,7 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
                 R.drawable.ic_qs_airplane_on :
                 R.drawable.ic_qs_airplane_off);
         mAirplaneModeState.label = r.getString(R.string.quick_settings_airplane_mode_label);
-		if (isToggleEnabled(AIRPLANE)) {
-			mAirplaneModeCallback.refreshView(mAirplaneModeTile, mAirplaneModeState);
-		}
+        mAirplaneModeCallback.refreshView(mAirplaneModeTile, mAirplaneModeState);
     }
 
     // Wifi
@@ -415,9 +400,7 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
             mWifiState.label = r.getString(R.string.quick_settings_wifi_off_label);
             mWifiState.signalContentDescription = r.getString(R.string.accessibility_wifi_off);
         }
-		if (isToggleEnabled(WIFI)) {
-			mWifiCallback.refreshView(mWifiTile, mWifiState);
-		}
+        mWifiCallback.refreshView(mWifiTile, mWifiState);
     }
 
     // RSSI
@@ -453,9 +436,7 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
             mRSSIState.label = enabled
                     ? removeTrailingPeriod(enabledDesc)
                     : r.getString(R.string.quick_settings_rssi_emergency_only);
-			if (isToggleEnabled(DATA)) {
-				mRSSICallback.refreshView(mRSSITile, mRSSIState);
-			}
+            mRSSICallback.refreshView(mRSSITile, mRSSIState);
         }
     }
 
@@ -498,9 +479,7 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
             mBluetoothState.label = r.getString(R.string.quick_settings_bluetooth_off_label);
             mBluetoothState.stateContentDescription = r.getString(R.string.accessibility_desc_off);
         }
-		if (isToggleEnabled(BT)) {
-			mBluetoothCallback.refreshView(mBluetoothTile, mBluetoothState);
-		}
+        mBluetoothCallback.refreshView(mBluetoothTile, mBluetoothState);
     }
     void refreshBluetoothTile() {
         if (mBluetoothTile != null) {
@@ -519,14 +498,10 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
     public void onBatteryLevelChanged(int level, boolean pluggedIn) {
         mBatteryState.batteryLevel = level;
         mBatteryState.pluggedIn = pluggedIn;
-		if (isToggleEnabled(BATTERY)) {
-			mBatteryCallback.refreshView(mBatteryTile, mBatteryState);
-		}
+        mBatteryCallback.refreshView(mBatteryTile, mBatteryState);
     }
     void refreshBatteryTile() {
-		if (isToggleEnabled(BATTERY)) {
-			mBatteryCallback.refreshView(mBatteryTile, mBatteryState);
-		}
+        mBatteryCallback.refreshView(mBatteryTile, mBatteryState);
     }
 
     // Location
@@ -710,9 +685,7 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
                 ? R.drawable.ic_qs_brightness_auto_on
                 : R.drawable.ic_qs_brightness_auto_off;
         mBrightnessState.label = r.getString(R.string.quick_settings_brightness_label);
-		if (isToggleEnabled(BRIGHTNESS)) {
-			mBrightnessCallback.refreshView(mBrightnessTile, mBrightnessState);
-		}
+        mBrightnessCallback.refreshView(mBrightnessTile, mBrightnessState);
     }
     void refreshBrightnessTile() {
         onBrightnessLevelChanged();
@@ -726,8 +699,4 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
         onNextAlarmChanged();
         onBugreportChanged();
     }
-	
-	private boolean isToggleEnabled(String toggle) {
-		return Settings.System.getInt(mContext.getContentResolver(), toggle , 1) == 1;	
-	}
 }
