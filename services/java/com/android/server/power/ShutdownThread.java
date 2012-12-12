@@ -85,6 +85,8 @@ public final class ShutdownThread extends Thread {
     private PowerManager.WakeLock mCpuWakeLock;
     private PowerManager.WakeLock mScreenWakeLock;
     private Handler mHandler;
+
+    private static AlertDialog sConfirmDialog;
     
     private ShutdownThread() {
     }
@@ -125,10 +127,11 @@ public final class ShutdownThread extends Thread {
 
         if (confirm) {
             final CloseDialogReceiver closer = new CloseDialogReceiver(context);
-            final AlertDialog dialog;
+            if (sConfirmDialog != null) {
+                sConfirmDialog.dismiss();
+            }
             if (mReboot && !mRebootSafeMode){
-                dialog = new AlertDialog.Builder(context)
-                        .setIcon(android.R.drawable.ic_dialog_alert)
+                sConfirmDialog = new AlertDialog.Builder(context)
                         .setTitle(com.android.internal.R.string.reboot_system)
                         .setSingleChoiceItems(com.android.internal.R.array.shutdown_reboot_options, 0, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
@@ -154,7 +157,7 @@ public final class ShutdownThread extends Thread {
                             }
                         })
                         .create();
-                        dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+                        sConfirmDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
                             public boolean onKey (DialogInterface dialog, int keyCode, KeyEvent event) {
                                 if (keyCode == KeyEvent.KEYCODE_BACK) {
                                     mReboot = false;
@@ -164,7 +167,7 @@ public final class ShutdownThread extends Thread {
                             }
                         });
             } else {
-                dialog = new AlertDialog.Builder(context)
+                sConfirmDialog = new AlertDialog.Builder(context)
                         .setTitle(mRebootSafeMode
                                 ? com.android.internal.R.string.reboot_safemode_title
                                 : com.android.internal.R.string.power_off)
@@ -178,10 +181,10 @@ public final class ShutdownThread extends Thread {
                         .create();
             }
 
-            closer.dialog = dialog;
-            dialog.setOnDismissListener(closer);
-            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_KEYGUARD_DIALOG);
-            dialog.show();
+            closer.dialog = sConfirmDialog;
+            sConfirmDialog.setOnDismissListener(closer);
+            sConfirmDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_KEYGUARD_DIALOG);
+            sConfirmDialog.show();
 
         } else {
             beginShutdownSequence(context);
@@ -337,7 +340,7 @@ public final class ShutdownThread extends Thread {
         }
 
         Log.i(TAG, "Sending shutdown broadcast...");
-        
+
         // First send the high-level shut down broadcast.
         mActionDone = false;
         mContext.sendOrderedBroadcastAsUser(new Intent(Intent.ACTION_SHUTDOWN),
@@ -357,9 +360,9 @@ public final class ShutdownThread extends Thread {
                 }
             }
         }
-        
+
         Log.i(TAG, "Shutting down activity manager...");
-        
+
         final IActivityManager am =
             ActivityManagerNative.asInterface(ServiceManager.checkService("activity"));
         if (am != null) {

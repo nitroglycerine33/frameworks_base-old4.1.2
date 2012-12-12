@@ -20,6 +20,8 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityOptions;
 import android.app.AlertDialog;
+import android.app.Profile;
+import android.app.ProfileManager;
 import android.app.SearchManager;
 import android.app.admin.DevicePolicyManager;
 import android.appwidget.AppWidgetHost;
@@ -41,6 +43,7 @@ import android.os.Parcelable;
 import android.os.SystemClock;
 import android.os.UserHandle;
 import android.os.UserManager;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Slog;
@@ -101,7 +104,11 @@ public class KeyguardHostView extends KeyguardViewBase {
 
     private boolean mSafeModeEnabled;
 
-    /*package*/ interface TransportCallback {
+
+     // We can use the profile manager to override security
+     private ProfileManager mProfileManager;
+
+     /*package*/ interface TransportCallback {
         void onListenerDetached();
         void onListenerAttached();
         void onPlayStateChanged();
@@ -132,6 +139,8 @@ public class KeyguardHostView extends KeyguardViewBase {
         mSecurityModel = new KeyguardSecurityModel(context);
 
         mViewStateManager = new KeyguardViewStateManager(this);
+
+        mProfileManager = (ProfileManager) context.getSystemService(Context.PROFILE_SERVICE);
 
         DevicePolicyManager dpm =
             (DevicePolicyManager) mContext.getSystemService(Context.DEVICE_POLICY_SERVICE);
@@ -856,10 +865,12 @@ public class KeyguardHostView extends KeyguardViewBase {
         SecurityMode mode = mSecurityModel.getSecurityMode();
         switch (mode) {
             case Pattern:
-                return mLockPatternUtils.isLockPatternEnabled();
+                return mLockPatternUtils.isLockPatternEnabled()
+                        && mProfileManager.getActiveProfile().getScreenLockMode()!= Profile.LockMode.INSECURE;
             case Password:
             case PIN:
-                return mLockPatternUtils.isLockPasswordEnabled();
+                return mLockPatternUtils.isLockPasswordEnabled()
+                        && mProfileManager.getActiveProfile().getScreenLockMode() != Profile.LockMode.INSECURE;
             case SimPin:
             case SimPuk:
             case Account:
@@ -1459,10 +1470,14 @@ public class KeyguardHostView extends KeyguardViewBase {
                 com.android.internal.R.bool.config_disableMenuKeyInLockScreen);
         final boolean isTestHarness = ActivityManager.isRunningInTestHarness();
         final boolean fileOverride = (new File(ENABLE_MENU_KEY_FILE)).exists();
-        return !configDisabled || isTestHarness || fileOverride;
+        final boolean menuOverride = Settings.System.getInt(getContext().getContentResolver(), Settings.System.MENU_UNLOCK_SCREEN, 0) == 1;
+        return !configDisabled || isTestHarness || fileOverride || menuOverride;
     }
 
-
+    private boolean shouldEnableHomeKey() {
+        final boolean homeOverride = Settings.System.getInt(getContext().getContentResolver(), Settings.System.HOME_UNLOCK_SCREEN, 0) == 1;
+        return homeOverride;
+    }
 
     public void goToUserSwitcher() {
         mAppWidgetContainer.setCurrentPage(getWidgetPosition(R.id.keyguard_multi_user_selector));
@@ -1476,6 +1491,15 @@ public class KeyguardHostView extends KeyguardViewBase {
     public boolean handleMenuKey() {
         // The following enables the MENU key to work for testing automation
         if (shouldEnableMenuKey()) {
+            showNextSecurityScreenOrFinish(false);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean handleHomeKey() {
+        // The following enables the HOME key to work for testing automation
+        if (shouldEnableHomeKey()) {
             showNextSecurityScreenOrFinish(false);
             return true;
         }

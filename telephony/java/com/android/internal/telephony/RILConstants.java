@@ -72,7 +72,7 @@ public interface RILConstants {
     int NETWORK_MODE_LTE_GSM_WCDMA  = 9; /* LTE, GSM/WCDMA */
     int NETWORK_MODE_LTE_CMDA_EVDO_GSM_WCDMA = 10; /* LTE, CDMA, EvDo, GSM/WCDMA */
     int NETWORK_MODE_LTE_ONLY       = 11; /* LTE Only mode. */
-
+    int NETWORK_MODE_LTE_WCDMA      = 12; /* LTE/WCDMA */
     int PREFERRED_NETWORK_MODE      = NETWORK_MODE_WCDMA_PREF;
 
     int CDMA_CELL_BROADCAST_SMS_DISABLED = 1;
@@ -297,4 +297,5 @@ cat include/telephony/ril.h | \
     int RIL_UNSOL_EXIT_EMERGENCY_CALLBACK_MODE = 1033;
     int RIL_UNSOL_RIL_CONNECTED = 1034;
     int RIL_UNSOL_VOICE_RADIO_TECH_CHANGED = 1035;
+    int RIL_UNSOL_STK_SEND_SMS_RESULT = 11002; /* Samsung STK */
 }

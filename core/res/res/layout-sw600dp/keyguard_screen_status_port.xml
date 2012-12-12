@@ -2,6 +2,7 @@
 <!--
 **
 ** Copyright 2010, The Android Open Source Project
+** Copyright 2012, The CyanogenMod Project (Weather, Calendar)
 **
 ** Licensed under the Apache License, Version 2.0 (the "License")
 ** you may not use this file except in compliance with the License.
@@ -43,8 +44,7 @@
     <com.android.internal.widget.DigitalClock android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dip"
-        android:layout_marginBottom="8dip">
+        android:layout_marginBottom="8dip" >
 
         <!-- Because we can't have multi-tone fonts, we render two TextViews, one on
         top of the other. Hence the redundant layout... -->
@@ -120,4 +120,5 @@
         android:visibility="invisible"
         android:textColor="@color/lockscreen_owner_info"
         />
+
 </LinearLayout>
